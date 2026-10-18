@@ -21,7 +21,11 @@ import AiChat from "@/components/AiChat";
 import InstallPWA from "@/components/InstallPWA";
 import { Toaster } from "sonner";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://rihla-seerah.vercel.app";
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null) ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+  "https://al-seerah.vercel.app";
 
 export const metadata: Metadata = {
   title: {
@@ -57,16 +61,16 @@ export const metadata: Metadata = {
     siteName: "رحلة في السيرة",
     images: [
       {
+        url: "/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "رحلة في السيرة — ثلاثون محطة من السيرة النبوية",
+      },
+      {
         url: "/thumbnail.jpg",
         width: 1920,
         height: 1080,
         alt: "رحلة في السيرة — ثلاثون محطة من السيرة النبوية",
-      },
-      {
-        url: "/og.jpg",
-        width: 1200,
-        height: 630,
-        alt: "رحلة في السيرة",
       },
     ],
     locale: "ar_AR",
@@ -76,7 +80,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "رحلة في السيرة — السيرة النبوية لابن هشام",
     description: "ثلاثون محطة من السيرة النبوية لابن هشام، تُروى بالنور والحركة.",
-    images: ["/thumbnail.jpg"],
+    images: ["/og.jpg"],
     creator: "@BelalAmrDev",
   },
   appleWebApp: {
