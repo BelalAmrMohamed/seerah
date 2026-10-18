@@ -1,0 +1,65 @@
+@import "tailwindcss";
+@theme {
+  --font-display: "Aref Ruqaa", "Amiri", serif;
+  --font-text: "Amiri", "Noto Naskh Arabic", serif;
+}
+:root, [data-theme="dark"] {
+  --bg: #0b0f1e; --bg2: #141a36; --ink: #efe9d8; --muted: #a9acc2; --line: rgba(239,233,216,.18);
+  --panel: rgba(14,19,40,.78); --solid: #121832; --accent: #e6b85c; color-scheme: dark;
+}
+[data-theme="light"] {
+  --bg: #e8edf4; --bg2: #d9e1ec; --ink: #131a3a; --muted: #454c6c; --line: rgba(19,26,58,.2);
+  --panel: rgba(232,237,244,.82); --solid: #f3f6fa; --accent: #8f6410; color-scheme: light;
+}
+[data-era="dawn"]    { --e-d: #e6b85c; --e-l: #8f6410; --w-d: #2e2114; --w-l: #ecdcb9; }
+[data-era="night"]   { --e-d: #98a4ff; --e-l: #2e3da6; --w-d: #151a45; --w-l: #cfd6f3; }
+[data-era="hijra"]   { --e-d: #9be8c0; --e-l: #0c6f4c; --w-d: #0f2a26; --w-l: #cfe9de; }
+[data-era="madina"]  { --e-d: #3fc9a0; --e-l: #0b7a5e; --w-d: #0b2b2a; --w-l: #c6e6dc; }
+[data-era="victory"] { --e-d: #ffe9a8; --e-l: #7d5f00; --w-d: #33290f; --w-l: #f2e6b8; }
+[data-era="farewell"]{ --e-d: #b9a4ff; --e-l: #5b3fb5; --w-d: #1b1440; --w-l: #ddd3f5; }
+[data-theme="dark"] [data-era], :root:not([data-theme]) [data-era] { --era: var(--e-d); --wash: var(--w-d); }
+[data-theme="light"] [data-era] { --era: var(--e-l); --wash: var(--w-l); }
+
+html { background: var(--bg); }
+body { background: transparent; color: var(--ink); font-family: var(--font-text); font-size: 1.15rem; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+::selection { background: var(--era, var(--accent)); color: var(--bg); }
+:focus-visible { outline: 2px solid var(--era, var(--accent)); outline-offset: 3px; border-radius: 6px; }
+
+.bg-veil { position: fixed; inset: 0; z-index: -2; background:
+  radial-gradient(120% 80% at 50% 0%, var(--bg2), var(--bg) 70%); }
+.vignette { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 55%, color-mix(in srgb, var(--bg) 70%, transparent) 100%); }
+
+.pin { min-height: 100svh; display: grid; align-content: center; position: relative; overflow: hidden; }
+.wrap { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: clamp(1.25rem, 6vw, 4.5rem); }
+.num { font-family: var(--font-display); line-height: 1; color: transparent; -webkit-text-stroke: 1.5px var(--era); font-size: clamp(4.5rem, 14vw, 10rem); }
+.title { font-family: var(--font-display); line-height: 1.55; font-size: clamp(2.1rem, 6.4vw, 5rem); font-weight: 700; text-wrap: balance; }
+.sub { color: var(--muted); font-size: clamp(1.2rem, 2.4vw, 1.6rem); line-height: 1.9; max-width: 38ch; }
+.meta { display: flex; gap: .5rem; align-items: center; color: var(--era); font-size: 1.1rem; line-height: 1.7; }
+.body-text { font-size: clamp(1.25rem, 2.2vw, 1.55rem); line-height: 2.15; max-width: 42ch; }
+.card { background: color-mix(in srgb, var(--solid) 94%, var(--era)); border: 1px solid var(--line); border-radius: 1.25rem; padding: clamp(1.25rem, 3vw, 2.25rem); }
+.chip { border: 1px solid var(--line); border-radius: 999px; padding: .15rem 1rem; background: color-mix(in srgb, var(--era) 10%, transparent); font-size: 1.05rem; }
+.btn { display: inline-flex; align-items: center; gap: .6rem; border: 1px solid var(--era); color: var(--era); border-radius: 999px; padding: .55rem 1.4rem; font-size: 1.1rem; background: color-mix(in srgb, var(--era) 8%, transparent); transition: background .25s, color .25s; cursor: pointer; }
+.btn:hover { background: var(--era); color: var(--bg); }
+.ghost { display: inline-flex; align-items: center; gap: .5rem; border: 1px solid var(--line); border-radius: 999px; padding: .3rem .95rem; background: var(--panel); backdrop-filter: blur(10px); font-size: 1rem; cursor: pointer; transition: border-color .2s; }
+.ghost:hover { border-color: var(--accent); }
+.iris { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--era) 38%, transparent), color-mix(in srgb, var(--era) 6%, transparent) 70%); }
+.orb { position: absolute; width: min(60vmin, 34rem); aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 80%, white) 0%, color-mix(in srgb, var(--accent) 35%, transparent) 28%, transparent 68%);
+  animation: breathe 6s ease-in-out infinite; filter: blur(2px); }
+@keyframes breathe { 50% { transform: scale(1.08); opacity: .82; } }
+.curtain { position: absolute; top: 0; bottom: 0; width: 50.2%; z-index: 5; background: linear-gradient(var(--solid), color-mix(in srgb, var(--solid) 85%, var(--era))); }
+.curtain::after { content: ""; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--era); box-shadow: 0 0 24px var(--era); }
+.hud-dot { width: .7rem; height: .7rem; border-radius: 50%; border: 1.5px solid var(--era); transition: background .3s, box-shadow .3s; }
+[data-on] > .hud-dot { background: var(--era); box-shadow: 0 0 14px var(--era); }
+[data-on] { color: var(--ink); }
+.tick { height: 2px; width: 10px; background: var(--line); transition: width .25s, background .25s; border-radius: 2px; }
+.tick[data-current="true"] { width: 26px; background: var(--era); }
+.tick:hover { width: 22px; background: var(--ink); }
+.glow { position: fixed; z-index: 2; pointer-events: none; width: 28rem; height: 28rem; margin: -14rem 0 0 -14rem; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 65%); will-change: transform; }
+@media (hover: none), (prefers-reduced-motion: reduce) { .glow { display: none; } .orb { animation: none; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
