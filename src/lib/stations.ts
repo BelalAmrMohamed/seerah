@@ -25,5 +25,13 @@ export const eraHex: Record<Era, { dark: string; light: string }> = {
   victory: { dark: "#FFE9A8", light: "#8A6A00" },
   farewell: { dark: "#B9A4FF", light: "#5B3FB5" },
 };
+export const eraNames: Record<Era, string> = {
+  dawn: "فجر الرسالة",
+  night: "العهد المكي",
+  hijra: "طريق الهجرة",
+  madina: "العهد المدني",
+  victory: "الفتح والتمكين",
+  farewell: "حجة الوداع",
+};
 export const sentences = (t: string) => t.split(/(?<=[.…])\s+/).filter(Boolean);
 export const cite = (s: { volume: number; page: number }) => `ابن هشام، السيرة النبوية — الجزء ${ar(s.volume)}، صفحة ${ar(s.page)}`;

@@ -2,7 +2,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Station } from "@/data/types";
 import type { Effect } from "@/config/scenes";
-import { activeStore, stage } from "./store";
+import { activeStore, stageRef } from "./store";
 import { ar, eraOf } from "./stations";
 import { geo } from "@/data/geo";
 
@@ -15,11 +15,11 @@ const pinCfg = (trigger: Element, len: string | (() => string), extra: ScrollTri
 export function mountActive(sec: HTMLElement, s: Station) {
   ScrollTrigger.create({
     trigger: sec, start: "top 55%", end: "bottom 55%",
-    onToggle: (self) => { if (self.isActive) { activeStore.set(s.id); stage.era = eraOf(s.category); } },
+    onToggle: (self) => { if (self.isActive) { activeStore.set(s.id); stageRef.era = eraOf(s.category); } },
   });
 }
 
-/** Ten distinct scroll choreographies. Each one animates a different part of the same scene markup. */
+/** Sixteen distinct scroll choreographies. Each one animates a different part of the same scene markup. */
 export function mountEffect(sec: HTMLElement, s: Station, effect: Effect, v: V) {
   const q = gsap.utils.selector(sec);
   const one = (sel: string) => q(sel)[0] as HTMLElement;
@@ -58,14 +58,14 @@ export function mountEffect(sec: HTMLElement, s: Station, effect: Effect, v: V) 
       ScrollTrigger.create({
         trigger: sec, start: "top 80%", end: "bottom 20%",
         onToggle: (self) => {
-          if (self.isActive) { stage.mode = "map"; stage.route.pts = pts.map((p) => p.p); stage.route.id = s.id; stage.route.progress = 0; }
-          else if (stage.route.id === s.id) { stage.mode = "field"; stage.route.id = 0; }
+          if (self.isActive) { stageRef.mode = "map"; stageRef.route.pts = pts.map((p) => p.p); stageRef.route.id = s.id; stageRef.route.progress = 0; }
+          else if (stageRef.route.id === s.id) { stageRef.mode = "field"; stageRef.route.id = 0; }
         },
       });
       ScrollTrigger.create({
         ...pinCfg(one("[data-pin]"), "+=170%", { scrub: true }),
         onUpdate: (self) => {
-          stage.route.progress = self.progress;
+          stageRef.route.progress = self.progress;
           wps.forEach((el, i) => el.toggleAttribute("data-on", self.progress >= i / Math.max(wps.length - 1, 1) - 0.001));
         },
       });
@@ -104,6 +104,93 @@ export function mountEffect(sec: HTMLElement, s: Station, effect: Effect, v: V) 
         .fromTo(one("[data-wash]"), { opacity: 0 }, { opacity: 1, ease: "none", duration: 1 }, 0)
         .to(o, { v: to, ease: "none", duration: 1, onUpdate: () => { out.textContent = ar(Math.round(o.v)); } }, 0)
         .fromTo(one("[data-title]"), { yPercent: 14, opacity: 0.3 }, { yPercent: 0, opacity: 1, ease: "none", duration: 0.6 }, 0.2);
+      break;
+    }
+
+    /* ═══════════════ NEW EFFECTS ═══════════════ */
+
+    case "door": { // ornate Islamic door panels swing open to reveal content
+      const pin = one("[data-pin]");
+      gsap.timeline({ scrollTrigger: pinCfg(pin, "+=130%") })
+        // Swing doors open with 3D perspective
+        .to(one("[data-door-l]"), { rotateY: -105, ease: "power2.inOut", duration: 0.7 }, 0)
+        .to(one("[data-door-r]"), { rotateY: 105, ease: "power2.inOut", duration: 0.7 }, 0)
+        // Golden glow blooms from behind
+        .fromTo(one("[data-door-glow]"), { opacity: 0 }, { opacity: 1, ease: "power1.in", duration: 0.4 }, 0.15)
+        .to(one("[data-door-glow]"), { opacity: 0.3, duration: 0.3 }, 0.7)
+        // Content fades in after doors part
+        .fromTo(one("[data-door-content]"), { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, ease: "power2.out", duration: 0.4 }, 0.4);
+      break;
+    }
+
+    case "rotate": { // content spirals in from a central point
+      const wrap = one("[data-rotate-wrap]");
+      gsap.timeline({ scrollTrigger: pinCfg(one("[data-pin]"), "+=120%") })
+        .fromTo(wrap, {
+          scale: 0, rotation: 540, opacity: 0, filter: "blur(20px)",
+        }, {
+          scale: 1, rotation: 0, opacity: 1, filter: "blur(0px)",
+          duration: 1, ease: "power3.out",
+        })
+        // Title gets extra emphasis
+        .fromTo(one("[data-title]"), { yPercent: 20 }, { yPercent: 0, duration: 0.5, ease: "power2.out" }, 0.3);
+      break;
+    }
+
+    case "horizon": { // content slides in from the desert horizon
+      const pin = one("[data-pin]");
+      gsap.timeline({ scrollTrigger: pinCfg(pin, "+=120%") })
+        // Background gradient fades in
+        .fromTo(one("[data-horizon-bg]"), { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, 0)
+        // Luminous horizon line sweeps across
+        .fromTo(one("[data-horizon-line]"), { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 0.1)
+        .to(one("[data-horizon-line]"), { opacity: 0.3, duration: 0.3 }, 0.6)
+        // Content slides in from the right (RTL: from the left visually)
+        .fromTo(one("[data-horizon-content]"), { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.3);
+      break;
+    }
+
+    case "split": { // content splits from center like a book opening
+      const pin = one("[data-pin]");
+      gsap.timeline({ scrollTrigger: pinCfg(pin, "+=140%") })
+        // Pages slide apart
+        .to(one("[data-book-l]"), { xPercent: -102, ease: "power2.inOut", duration: 0.6 }, 0)
+        .to(one("[data-book-r]"), { xPercent: 102, ease: "power2.inOut", duration: 0.6 }, 0)
+        // Spine glows then fades
+        .fromTo(one("[data-book-spine]"), { scaleY: 0.3, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.3, ease: "power1.out" }, 0)
+        .to(one("[data-book-spine]"), { opacity: 0, duration: 0.3 }, 0.5)
+        // Content revealed with word-by-word stagger
+        .fromTo(one("[data-split-content]"), { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }, 0.35)
+        .fromTo(q("[data-w]"), { opacity: 0.1 }, { opacity: 1, stagger: 0.05, ease: "none" }, 0.45);
+      break;
+    }
+
+    case "morph": { // previous station number morphs into current
+      const pin = one("[data-pin]");
+      const numEl = one("[data-morph-num]");
+      const from = s.id > 1 ? s.id - 1 : s.id;
+      const o = { v: from };
+      gsap.timeline({ scrollTrigger: pinCfg(pin, "+=110%") })
+        // Number morphs: scale pulses and value counts
+        .to(o, {
+          v: s.id, duration: 0.5, ease: "power1.inOut",
+          onUpdate: () => { numEl.textContent = ar(Math.round(o.v)); },
+        }, 0)
+        .fromTo(numEl, { scale: 1, opacity: 0.15 }, { scale: 1.15, opacity: 0.3, duration: 0.25, ease: "power1.in" }, 0)
+        .to(numEl, { scale: 1, opacity: 0.12, duration: 0.25, ease: "power1.out" }, 0.25)
+        // Content fades in
+        .fromTo(one("[data-morph-content]"), { opacity: 0, yPercent: 12 }, { opacity: 1, yPercent: 0, duration: 0.5, ease: "power2.out" }, 0.3);
+      break;
+    }
+
+    case "constellation": { // stars coalesce and title types in
+      const pin = one("[data-pin]");
+      gsap.timeline({ scrollTrigger: pinCfg(pin, "+=130%") })
+        // Background glow intensifies
+        .fromTo(one("[data-constellation]"), { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "none" }, 0)
+        // Content types in
+        .fromTo(one("[data-constellation-content]"), { opacity: 0, scale: 0.9, filter: "blur(8px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "power2.out" }, 0.3)
+        .fromTo(one("[data-title]"), { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "power1.inOut" }, 0.35);
       break;
     }
   }
