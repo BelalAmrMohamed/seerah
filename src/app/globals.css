@@ -156,10 +156,12 @@ html.lenis, html.lenis body { height: auto; }
 .door-panel--left {
   left: 0;
   transform-origin: left center;
+  filter: drop-shadow(4px 0 24px rgba(0,0,0,0.5));
 }
 .door-panel--right {
   right: 0;
   transform-origin: right center;
+  filter: drop-shadow(-4px 0 24px rgba(0,0,0,0.5));
 }
 /* Front face of each door (the SVG content) */
 .door-panel > div {

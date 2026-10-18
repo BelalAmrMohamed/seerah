@@ -1,7 +1,14 @@
+"use client";
 import Link from "next/link";
-import { BookOpen, ArrowUp, Heart } from "lucide-react";
+import { BookOpen, ArrowUp, Download } from "lucide-react";
+import { triggerPwaInstall } from "@/components/InstallPWA";
+import { toast } from "sonner";
 
 export default function Footer() {
+  const handleInstallClick = () => {
+    triggerPwaInstall((msg) => toast(msg, { duration: 6000 }));
+  };
+
   return (
     <footer data-era="farewell" className="relative overflow-hidden">
       {/* Decorative top border */}
@@ -36,6 +43,28 @@ export default function Footer() {
               <BookOpen size={16} />
               استكشف المحطات
             </Link>
+            <button
+              onClick={handleInstallClick}
+              className="btn gap-2 font-medium"
+              style={{
+                borderColor: "color-mix(in srgb, var(--accent) 40%, var(--line))",
+                color: "var(--accent)",
+              }}
+              title="تثبيت التطبيق على جهازك"
+            >
+              <Download size={16} />
+              تثبيت التطبيق
+            </button>
+          </div>
+
+          <div className="text-center">
+            <button
+              onClick={handleInstallClick}
+              className="inline-flex items-center gap-1.5 text-xs text-[color:var(--muted)] hover:text-[color:var(--accent)] transition-colors underline underline-offset-4"
+            >
+              <Download size={13} />
+              تثبيت موقع «رحلة في السيرة» كتطبيق على هاتفك أو جهازك (PWA)
+            </button>
           </div>
 
           {/* Divider */}

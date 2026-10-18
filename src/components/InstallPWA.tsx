@@ -7,6 +7,38 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+let globalPrompt: BeforeInstallPromptEvent | null = null;
+
+export async function triggerPwaInstall(showToast?: (msg: string) => void): Promise<void> {
+  if (typeof window === "undefined") return;
+
+  // Check if standalone / already installed
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || (window.navigator as unknown as { standalone?: boolean }).standalone;
+  if (isStandalone) {
+    showToast?.("التطبيق مثبت بالفعل ويعمل بكامل ميزاته على جهازك!");
+    return;
+  }
+
+  // If native prompt is available
+  if (globalPrompt) {
+    const res = await globalPrompt.prompt();
+    if (res.outcome === "accepted") {
+      globalPrompt = null;
+    }
+    return;
+  }
+
+  // iOS Safari detection
+  const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+  if (isIos) {
+    showToast?.("لتثبيت التطبيق: اضغط على زر المشاركة [ ⎋ ] في أسفل المتصفح، ثم اختر «إضافة إلى الشاشة الرئيسية» (+)");
+    return;
+  }
+
+  // Desktop or Android fallback where prompt wasn't captured or already handled
+  showToast?.("يمكنك تثبيت التطبيق من شريط العنوان في المتصفح بالضغط على أيقونة التثبيت (⊕)");
+}
+
 export default function InstallPWA() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showBanner, setShowBanner] = useState(false);
@@ -21,12 +53,22 @@ export default function InstallPWA() {
     // Listen for beforeinstallprompt
     const handler = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      const pEvent = e as BeforeInstallPromptEvent;
+      globalPrompt = pEvent;
+      setDeferredPrompt(pEvent);
       // Only show if user hasn't dismissed before
       const dismissed = localStorage.getItem("rihla-pwa-dismissed");
       if (!dismissed) setShowBanner(true);
     };
     window.addEventListener("beforeinstallprompt", handler);
+
+    // Also listen for trigger custom event
+    const triggerHandler = () => {
+      if (globalPrompt) {
+        globalPrompt.prompt();
+      }
+    };
+    window.addEventListener("rihla:trigger-install", triggerHandler);
 
     // Detect if already installed
     const matchMedia = window.matchMedia("(display-mode: standalone)");
@@ -40,9 +82,13 @@ export default function InstallPWA() {
       setInstalled(true);
       setShowBanner(false);
       setDeferredPrompt(null);
+      globalPrompt = null;
     });
 
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("rihla:trigger-install", triggerHandler);
+    };
   }, []);
 
   const handleInstall = async () => {
