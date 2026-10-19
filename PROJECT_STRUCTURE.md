@@ -22,7 +22,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── image.png
 │   └── issues.md
 │
-├── public/ [762.07 KB, 125 LOC]
+├── public/ [762.15 KB, 125 LOC]
 │   ├── data/ [59.86 KB, 1 LOC]
 │   │   └── arabia-dots.json
 │   │
@@ -41,15 +41,15 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [388.58 KB, 6979 LOC]
-    ├── app/ [74.92 KB, 1676 LOC]
+└── src/ [390.47 KB, 7007 LOC]
+    ├── app/ [75.72 KB, 1686 LOC]
     │   ├── api/ [3.5 KB, 85 LOC]
     │   │   └── ai/ [3.5 KB, 85 LOC]
     │   │       └── chat/ [3.5 KB, 85 LOC]
     │   │           └── ... (max depth reached)
     │   │
-    │   ├── auth/ [10.44 KB, 252 LOC]
-    │   │   ├── callback/ [1.38 KB, 45 LOC]
+    │   ├── auth/ [10.89 KB, 262 LOC]
+    │   │   ├── callback/ [1.42 KB, 45 LOC]
     │   │   │   └── route.ts
     │   │   │
     │   │   └── page.tsx
@@ -68,7 +68,7 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── layout.tsx
     │   └── page.tsx
     │
-    ├── components/ [140.74 KB, 3229 LOC]
+    ├── components/ [141.83 KB, 3247 LOC]
     │   ├── chat/ [26.79 KB, 661 LOC]
     │   │   ├── ChatHistoryDrawer.tsx
     │   │   ├── ChatMessageItem.tsx
@@ -124,7 +124,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Directory | Lines of Code |
 |-----------|---------------|
-| `src` | 6979 |
+| `src` | 7007 |
 | `(root)` | 994 |
 | `scripts` | 754 |
 | `public` | 125 |
@@ -138,7 +138,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 | `stations.json` | 690 |
 | `src/components/Scene.tsx` | 674 |
 | `src/components/AiChat.tsx` | 625 |
-| `src/components/Header.tsx` | 461 |
+| `src/components/Header.tsx` | 479 |
 | `src/app/explore/page.tsx` | 441 |
 | `src/app/globals.css` | 361 |
 | `src/lib/chatStore.ts` | 360 |
@@ -149,15 +149,15 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 25 | 4447 | 192.62 KB |
-| .ts | 17 | 1492 | 52.24 KB |
+| .tsx | 25 | 4475 | 194.12 KB |
+| .ts | 17 | 1492 | 52.28 KB |
 | .json | 7 | 1527 | 490.58 KB |
-| .js | 5 | 823 | 28.47 KB |
-| .md | 3 | 189 | 6.07 KB |
+| .js | 5 | 823 | 28.55 KB |
+| .md | 3 | 189 | 6.24 KB |
 | .mjs | 2 | 15 | 726 B |
-| .css | 1 | 361 | 19.42 KB |
+| .css | 1 | 361 | 19.77 KB |
 | .tsbuildinfo | 1 | 1 | 494.54 KB |
-| **Total** | **61** | **8855** | **1.25 MB** |
+| **Total** | **61** | **8883** | **1.26 MB** |
 
 ### Binary / Media Files (Physical Size)
 

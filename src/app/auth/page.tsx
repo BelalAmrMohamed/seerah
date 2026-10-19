@@ -35,7 +35,17 @@ export default function AuthPage() {
           options: { data: { full_name: name } },
         });
         if (error) throw error;
-        if (data.user) {
+
+        // If email confirmation is enabled in Supabase, session is null until confirmed
+        if (data.user && !data.session) {
+          toast.info("تم إنشاء الحساب! أرسلنا رابط تأكيد إلى بريدك الإلكتروني. يرجى تفعيله للمتابعة.", {
+            duration: 6000,
+          });
+          setMode("login");
+          return;
+        }
+
+        if (data.session && data.user) {
           setUser({ id: data.user.id, email: data.user.email!, name });
           toast.success("تم إنشاء الحساب بنجاح");
           router.push("/");

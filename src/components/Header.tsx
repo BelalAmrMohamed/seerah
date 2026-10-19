@@ -57,12 +57,30 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  // Check auth on mount
+  // Sync auth on mount & listen to state changes
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user: u } }) => {
-      if (u) setUser({ id: u.id, email: u.email!, name: u.user_metadata?.full_name });
+      if (u) {
+        setUser({ id: u.id, email: u.email!, name: u.user_metadata?.full_name });
+      } else {
+        setUser(null);
+      }
     });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email!,
+          name: session.user.user_metadata?.full_name,
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [setUser]);
 
   const dark = !mounted || resolvedTheme !== "light";
