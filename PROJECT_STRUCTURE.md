@@ -153,7 +153,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 | .ts | 17 | 1492 | 52.28 KB |
 | .json | 7 | 1527 | 490.58 KB |
 | .js | 5 | 823 | 28.55 KB |
-| .md | 3 | 189 | 6.24 KB |
+| .md | 3 | 189 | 6.05 KB |
 | .mjs | 2 | 15 | 726 B |
 | .css | 1 | 361 | 19.77 KB |
 | .tsbuildinfo | 1 | 1 | 494.55 KB |
