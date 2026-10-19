@@ -79,7 +79,7 @@ export default function Header() {
           borderBottom: "1px solid var(--glass-border)",
         }}
       >
-        <div className="mx-auto flex h-14 sm:h-16 items-center justify-between px-3 sm:px-6 md:px-8 max-w-7xl">
+        <div className="mx-auto flex h-14 sm:h-16 items-center justify-between px-3.5 sm:px-6 md:px-8 max-w-7xl">
           {/* Logo & Desktop Nav */}
           <div className="flex items-center gap-3 sm:gap-6 min-w-0 shrink-0">
             <Link
@@ -112,31 +112,33 @@ export default function Header() {
 
           {/* Action buttons */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* AI Assistant button */}
-            <Magnetic power={0.2}>
-              <button
-                type="button"
-                onClick={toggleAiChat}
-                className="flex h-9 w-9 sm:h-9 sm:w-auto items-center justify-center sm:px-3 gap-1.5 rounded-full border transition-all text-xs sm:text-sm font-ui shrink-0 cursor-pointer"
-                style={{
-                  borderColor: "color-mix(in srgb, var(--accent) 40%, var(--line))",
-                  background: "color-mix(in srgb, var(--accent) 10%, var(--panel))",
-                  color: "var(--accent)",
-                }}
-                aria-label="المساعد الذكي"
-                title="اسأل المساعد الذكي عن السيرة"
-              >
-                <Sparkles size={16} className="shrink-0" />
-                <span className="hidden sm:inline font-medium">اسأل</span>
-              </button>
-            </Magnetic>
+            {/* AI Assistant button (Desktop/Tablet only - on phones it is in the sidebar) */}
+            <div className="hidden sm:inline-flex shrink-0">
+              <Magnetic power={0.2}>
+                <button
+                  type="button"
+                  onClick={toggleAiChat}
+                  className="flex h-9 sm:w-auto items-center justify-center px-3 gap-1.5 rounded-full border transition-all text-xs sm:text-sm font-ui shrink-0 cursor-pointer"
+                  style={{
+                    borderColor: "color-mix(in srgb, var(--accent) 40%, var(--line))",
+                    background: "color-mix(in srgb, var(--accent) 10%, var(--panel))",
+                    color: "var(--accent)",
+                  }}
+                  aria-label="المساعد الذكي"
+                  title="اسأل المساعد الذكي عن السيرة"
+                >
+                  <Sparkles size={16} className="shrink-0" />
+                  <span className="font-medium">اسأل</span>
+                </button>
+              </Magnetic>
+            </div>
 
-            {/* Global Search */}
+            {/* Global Search (Always visible, clean and compact on phones) */}
             <Magnetic power={0.2}>
               <button
                 type="button"
                 onClick={() => window.dispatchEvent(new Event("rihla:search"))}
-                className="ghost !h-9 !w-9 sm:!w-auto !p-0 sm:!px-3 flex items-center justify-center gap-1.5 font-ui text-xs sm:text-sm text-[color:var(--ink)] shrink-0"
+                className="ghost !h-9 !w-9 sm:!w-auto !p-0 sm:!px-3 flex items-center justify-center gap-1.5 font-ui text-xs sm:text-sm text-[color:var(--ink)] shrink-0 cursor-pointer"
                 aria-label="ابحث في المحطات"
                 title="البحث السريع (Ctrl+K)"
               >
@@ -145,50 +147,54 @@ export default function Header() {
               </button>
             </Magnetic>
 
-            {/* Theme switcher */}
-            <Magnetic power={0.2}>
-              <button
-                type="button"
-                onClick={() => setTheme(dark ? "light" : "dark")}
-                className="ghost !h-9 !w-9 !p-0 flex items-center justify-center text-[color:var(--ink)] shrink-0"
-                aria-label={dark ? "الوضع النهاري" : "الوضع الليلي"}
-                title={dark ? "الوضع النهاري" : "الوضع الليلي"}
-              >
-                {dark ? <Sun size={16} /> : <Moon size={16} />}
-              </button>
-            </Magnetic>
-
-            {/* User Profile / Sign in */}
-            {user ? (
+            {/* Theme switcher (Desktop/Tablet only - on phones it is in the sidebar) */}
+            <div className="hidden sm:inline-flex shrink-0">
               <Magnetic power={0.2}>
-                <Link
-                  href="/profile"
-                  className="ghost !h-9 !w-9 sm:!w-auto !p-0 sm:!px-3 flex items-center justify-center gap-1.5 font-ui text-xs sm:text-sm shrink-0"
-                  aria-label="الملف الشخصي"
-                  title="الملف الشخصي"
+                <button
+                  type="button"
+                  onClick={() => setTheme(dark ? "light" : "dark")}
+                  className="ghost !h-9 !w-9 !p-0 flex items-center justify-center text-[color:var(--ink)] shrink-0 cursor-pointer"
+                  aria-label={dark ? "الوضع النهاري" : "الوضع الليلي"}
+                  title={dark ? "الوضع النهاري" : "الوضع الليلي"}
                 >
-                  <User size={16} style={{ color: "var(--accent)" }} className="shrink-0" />
-                  <span className="hidden sm:inline truncate max-w-[90px] font-medium">{user.name || "حسابي"}</span>
-                </Link>
+                  {dark ? <Sun size={16} /> : <Moon size={16} />}
+                </button>
               </Magnetic>
-            ) : (
-              <Magnetic power={0.2}>
-                <Link
-                  href="/auth"
-                  className="hidden sm:inline-flex ghost !h-9 sm:!px-3.5 items-center justify-center font-ui text-xs sm:text-sm whitespace-nowrap shrink-0"
-                  title="تسجيل الدخول"
-                >
-                  تسجيل الدخول
-                </Link>
-              </Magnetic>
-            )}
+            </div>
 
-            {/* Hamburger menu button */}
+            {/* User Profile / Sign in (Desktop/Tablet only - on phones it is in the sidebar) */}
+            <div className="hidden sm:inline-flex shrink-0">
+              {user ? (
+                <Magnetic power={0.2}>
+                  <Link
+                    href="/profile"
+                    className="ghost !h-9 sm:!w-auto sm:!px-3 flex items-center justify-center gap-1.5 font-ui text-xs sm:text-sm shrink-0"
+                    aria-label="الملف الشخصي"
+                    title="الملف الشخصي"
+                  >
+                    <User size={16} style={{ color: "var(--accent)" }} className="shrink-0" />
+                    <span className="truncate max-w-[90px] font-medium">{user.name || "حسابي"}</span>
+                  </Link>
+                </Magnetic>
+              ) : (
+                <Magnetic power={0.2}>
+                  <Link
+                    href="/auth"
+                    className="ghost !h-9 sm:!px-3.5 inline-flex items-center justify-center font-ui text-xs sm:text-sm whitespace-nowrap shrink-0"
+                    title="تسجيل الدخول"
+                  >
+                    تسجيل الدخول
+                  </Link>
+                </Magnetic>
+              )}
+            </div>
+
+            {/* Hamburger menu button (Always accessible, opens the rich sidebar) */}
             <Magnetic power={0.2}>
               <button
                 type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="ghost !h-9 !w-9 !p-0 flex items-center justify-center text-[color:var(--ink)] shrink-0"
+                className="ghost !h-9 !w-9 !p-0 flex items-center justify-center text-[color:var(--ink)] shrink-0 cursor-pointer"
                 aria-label={menuOpen ? "إغلاق القائمة" : "فتح القائمة"}
                 aria-expanded={menuOpen}
               >
@@ -228,36 +234,25 @@ export default function Header() {
               }}
             >
               {/* Drawer Header */}
-              <div className="flex items-center justify-between pb-5 border-b border-[color:var(--line)]">
+              <div className="flex items-center justify-between pb-4 border-b border-[color:var(--line)]">
                 <div>
                   <h2 className="font-display text-xl sm:text-2xl" style={{ color: "var(--accent)" }}>
                     رحلة في السيرة
                   </h2>
                   <p className="text-xs text-[color:var(--muted)]">السيرة النبوية لابن هشام</p>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setTheme(dark ? "light" : "dark")}
-                    className="ghost !h-9 !w-9 !p-0 flex items-center justify-center text-[color:var(--ink)]"
-                    aria-label={dark ? "الوضع النهاري" : "الوضع الليلي"}
-                    title={dark ? "الوضع النهاري" : "الوضع الليلي"}
-                  >
-                    {dark ? <Sun size={16} /> : <Moon size={16} />}
-                  </button>
-                  <button
-                    type="button"
-                    className="ghost !h-9 !w-9 !p-0 flex items-center justify-center"
-                    onClick={() => setMenuOpen(false)}
-                    aria-label="إغلاق القائمة"
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  className="ghost !h-9 !w-9 !p-0 flex items-center justify-center cursor-pointer"
+                  onClick={() => setMenuOpen(false)}
+                  aria-label="إغلاق القائمة"
+                >
+                  <X size={18} />
+                </button>
               </div>
 
-              {/* User status card */}
-              <div className="my-4 rounded-2xl p-4 border border-[color:var(--line)] bg-[color:var(--panel)]">
+              {/* User status card (Prominent in sidebar for mobile access) */}
+              <div className="my-3.5 rounded-2xl p-4 border border-[color:var(--line)] bg-[color:var(--panel)]">
                 {user ? (
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
@@ -283,10 +278,51 @@ export default function Header() {
                       onClick={() => setMenuOpen(false)}
                       className="btn-primary !py-1.5 !px-3.5 !text-xs whitespace-nowrap shrink-0"
                     >
-                      دخول
+                      تسجيل الدخول
                     </Link>
                   </div>
                 )}
+              </div>
+
+              {/* Quick Controls Grid on Sidebar (Theme Switcher & AI Assistant) */}
+              <div className="grid grid-cols-2 gap-2 mb-3.5">
+                {/* Theme Switcher Button */}
+                <button
+                  type="button"
+                  onClick={() => setTheme(dark ? "light" : "dark")}
+                  className="flex items-center justify-between rounded-xl border border-[color:var(--line)] bg-[color:var(--panel)] px-3 py-2.5 text-xs font-ui transition-all hover:border-[color:var(--accent)] cursor-pointer"
+                  aria-label={dark ? "تفعيل الوضع النهاري" : "تفعيل الوضع الليلي"}
+                >
+                  <div className="flex items-center gap-1.5">
+                    {dark ? <Sun size={15} className="text-amber-400" /> : <Moon size={15} className="text-indigo-400" />}
+                    <span className="text-[color:var(--ink)] font-medium">
+                      {dark ? "النهاري" : "الليلي"}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-[color:var(--muted)]">تبديل</span>
+                </button>
+
+                {/* AI Assistant Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    toggleAiChat();
+                  }}
+                  className="flex items-center justify-between rounded-xl border border-[color:var(--line)] bg-[color:var(--panel)] px-3 py-2.5 text-xs font-ui transition-all hover:border-[color:var(--accent)] cursor-pointer"
+                  style={{
+                    borderColor: "color-mix(in srgb, var(--accent) 35%, var(--line))",
+                    background: "color-mix(in srgb, var(--accent) 8%, var(--panel))",
+                  }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles size={15} style={{ color: "var(--accent)" }} />
+                    <span className="text-[color:var(--accent)] font-medium">المساعد الذكي</span>
+                  </div>
+                  <span className="rounded-full px-1.5 py-0.2 text-[9px] bg-[color:var(--accent)] text-[color:var(--bg)] font-semibold">
+                    اسأل
+                  </span>
+                </button>
               </div>
 
               {/* Main Links */}
@@ -334,14 +370,14 @@ export default function Header() {
                     setMenuOpen(false);
                     toggleAiChat();
                   }}
-                  className="flex items-center justify-between rounded-xl px-4 py-3 text-base text-start transition-all hover:bg-[color:var(--panel)]"
+                  className="flex items-center justify-between rounded-xl px-4 py-3 text-base text-start transition-all hover:bg-[color:var(--panel)] cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <Sparkles size={18} style={{ color: "var(--accent)" }} />
-                    <span>المساعد الذكي</span>
+                    <span>المساعد الذكي (شات)</span>
                   </div>
                   <span className="rounded-full px-2 py-0.5 text-[10px] bg-[color:var(--accent)] text-[color:var(--bg)] font-semibold">
-                    اسأل
+                    جديد
                   </span>
                 </button>
 
@@ -351,14 +387,14 @@ export default function Header() {
                     setMenuOpen(false);
                     window.dispatchEvent(new Event("rihla:search"));
                   }}
-                  className="flex items-center justify-between rounded-xl px-4 py-3 text-base text-start transition-all hover:bg-[color:var(--panel)]"
+                  className="flex items-center justify-between rounded-xl px-4 py-3 text-base text-start transition-all hover:bg-[color:var(--panel)] cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <Search size={18} />
-                    <span>البحث في السيرة</span>
+                    <span>البحث السريع في السيرة</span>
                   </div>
                   <kbd className="rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--muted)]">
-                    بحث
+                    Ctrl+K
                   </kbd>
                 </button>
               </div>
