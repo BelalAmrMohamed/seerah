@@ -30,8 +30,12 @@ export default function ChatHistoryDrawer({ currentStationId }: ChatHistoryDrawe
   const pinnedSessions = sessions.filter((s) => s.pinned);
   const recentSessions = sessions.filter((s) => !s.pinned);
 
+  const activeSession = sessions.find((s) => s.id === activeSessionId) || sessions[0] || null;
+  const isNewChat = !activeSession || Object.keys(activeSession.messages || {}).length === 0;
+
   const handleStartNewChat = () => {
-    const id = createNewSession(currentStationId);
+    if (isNewChat) return;
+    createNewSession(currentStationId);
     toast.success("تم بدء محادثة جديدة");
   };
 
@@ -87,13 +91,13 @@ export default function ChatHistoryDrawer({ currentStationId }: ChatHistoryDrawe
             className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
           />
 
-          {/* Sidebar Drawer */}
+          {/* Sidebar Drawer - Docked to right edge for natural RTL transition */}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "spring", stiffness: 320, damping: 32 }}
-            className="relative ms-auto flex h-full w-[min(88vw,20rem)] flex-col border-s border-[color:var(--line)] bg-[color:var(--solid)] shadow-2xl z-10 select-none"
+            transition={{ type: "spring", stiffness: 340, damping: 32 }}
+            className="absolute inset-y-0 right-0 flex h-full w-[min(85vw,20rem)] flex-col border-l border-[color:var(--line)] bg-[color:var(--solid)] shadow-2xl z-10 select-none"
           >
             {/* Drawer Header */}
             <div className="flex items-center justify-between border-b border-[color:var(--line)] p-4 shrink-0">
@@ -116,7 +120,9 @@ export default function ChatHistoryDrawer({ currentStationId }: ChatHistoryDrawe
               <button
                 type="button"
                 onClick={handleStartNewChat}
-                className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 px-3 border border-[color:var(--line)] bg-[color:var(--panel)] font-ui text-xs font-medium text-[color:var(--accent)] hover:border-[color:var(--accent)] transition-all cursor-pointer shadow-sm"
+                disabled={isNewChat}
+                className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 px-3 border border-[color:var(--line)] bg-[color:var(--panel)] font-ui text-xs font-medium text-[color:var(--accent)] hover:border-[color:var(--accent)] transition-all cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-[color:var(--line)]"
+                title={isNewChat ? "أنت في محادثة جديدة بالفعل" : "بدء محادثة جديدة"}
               >
                 <Plus size={15} />
                 <span>محادثة جديدة</span>

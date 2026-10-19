@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "motion/react";
 import { useAppStore } from "@/lib/store";
 import { createClient } from "@/lib/supabase/client";
+import { getLenis } from "@/lib/scroll";
 import { triggerPwaInstall } from "@/components/InstallPWA";
 import { toast } from "sonner";
 import Magnetic from "./Magnetic";
@@ -41,14 +42,17 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Lock body scroll when drawer is open
+  // Lock body scroll and pause Lenis when drawer is open
   useEffect(() => {
     if (menuOpen) {
+      getLenis()?.stop();
       document.body.style.overflow = "hidden";
     } else {
+      getLenis()?.start();
       document.body.style.overflow = "";
     }
     return () => {
+      getLenis()?.start();
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
@@ -226,7 +230,8 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 260 }}
-              className="relative ms-auto flex h-full w-full max-w-[340px] sm:max-w-sm flex-col overflow-y-auto p-5 sm:p-6 shadow-2xl"
+              data-lenis-prevent
+              className="relative ms-auto flex h-full w-full max-w-[340px] sm:max-w-sm flex-col overflow-y-auto overscroll-contain p-5 sm:p-6 shadow-2xl"
               style={{
                 background: "var(--solid)",
                 borderInlineStart: "1px solid var(--line)",
@@ -234,25 +239,36 @@ export default function Header() {
               }}
             >
               {/* Drawer Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-[color:var(--line)]">
+              <div className="flex items-center justify-between pb-4 border-b border-[color:var(--line)] shrink-0">
                 <div>
                   <h2 className="font-display text-xl sm:text-2xl" style={{ color: "var(--accent)" }}>
                     رحلة في السيرة
                   </h2>
                   <p className="text-xs text-[color:var(--muted)]">السيرة النبوية لابن هشام</p>
                 </div>
-                <button
-                  type="button"
-                  className="ghost !h-9 !w-9 !p-0 flex items-center justify-center cursor-pointer"
-                  onClick={() => setMenuOpen(false)}
-                  aria-label="إغلاق القائمة"
-                >
-                  <X size={18} />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setTheme(dark ? "light" : "dark")}
+                    className="ghost !h-9 !w-9 !p-0 flex items-center justify-center text-[color:var(--ink)] cursor-pointer"
+                    aria-label={dark ? "تفعيل الوضع النهاري" : "تفعيل الوضع الليلي"}
+                    title={dark ? "الوضع النهاري" : "الوضع الليلي"}
+                  >
+                    {dark ? <Sun size={17} className="text-amber-400" /> : <Moon size={17} className="text-indigo-400" />}
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost !h-9 !w-9 !p-0 flex items-center justify-center cursor-pointer"
+                    onClick={() => setMenuOpen(false)}
+                    aria-label="إغلاق القائمة"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
               </div>
 
               {/* User status card (Prominent in sidebar for mobile access) */}
-              <div className="my-3.5 rounded-2xl p-4 border border-[color:var(--line)] bg-[color:var(--panel)]">
+              <div className="my-3.5 rounded-2xl p-4 border border-[color:var(--line)] bg-[color:var(--panel)] shrink-0">
                 {user ? (
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
@@ -284,49 +300,8 @@ export default function Header() {
                 )}
               </div>
 
-              {/* Quick Controls Grid on Sidebar (Theme Switcher & AI Assistant) */}
-              <div className="grid grid-cols-2 gap-2 mb-3.5">
-                {/* Theme Switcher Button */}
-                <button
-                  type="button"
-                  onClick={() => setTheme(dark ? "light" : "dark")}
-                  className="flex items-center justify-between rounded-xl border border-[color:var(--line)] bg-[color:var(--panel)] px-3 py-2.5 text-xs font-ui transition-all hover:border-[color:var(--accent)] cursor-pointer"
-                  aria-label={dark ? "تفعيل الوضع النهاري" : "تفعيل الوضع الليلي"}
-                >
-                  <div className="flex items-center gap-1.5">
-                    {dark ? <Sun size={15} className="text-amber-400" /> : <Moon size={15} className="text-indigo-400" />}
-                    <span className="text-[color:var(--ink)] font-medium">
-                      {dark ? "النهاري" : "الليلي"}
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-[color:var(--muted)]">تبديل</span>
-                </button>
-
-                {/* AI Assistant Button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    toggleAiChat();
-                  }}
-                  className="flex items-center justify-between rounded-xl border border-[color:var(--line)] bg-[color:var(--panel)] px-3 py-2.5 text-xs font-ui transition-all hover:border-[color:var(--accent)] cursor-pointer"
-                  style={{
-                    borderColor: "color-mix(in srgb, var(--accent) 35%, var(--line))",
-                    background: "color-mix(in srgb, var(--accent) 8%, var(--panel))",
-                  }}
-                >
-                  <div className="flex items-center gap-1.5">
-                    <Sparkles size={15} style={{ color: "var(--accent)" }} />
-                    <span className="text-[color:var(--accent)] font-medium">المساعد الذكي</span>
-                  </div>
-                  <span className="rounded-full px-1.5 py-0.2 text-[9px] bg-[color:var(--accent)] text-[color:var(--bg)] font-semibold">
-                    اسأل
-                  </span>
-                </button>
-              </div>
-
               {/* Main Links */}
-              <div className="grid gap-1">
+              <div className="grid gap-1 shrink-0">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted)] px-3 mb-1">
                   التنقل الرئيسي
                 </span>
@@ -400,7 +375,7 @@ export default function Header() {
               </div>
 
               {/* Eras Section */}
-              <div className="mt-5 grid gap-1 border-t border-[color:var(--line)] pt-4">
+              <div className="mt-5 grid gap-1 border-t border-[color:var(--line)] pt-4 shrink-0">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted)] px-3 mb-1">
                   الحِقَب التاريخية
                 </span>
@@ -421,7 +396,7 @@ export default function Header() {
               </div>
 
               {/* Drawer Footer & Developer Watermark */}
-              <div className="mt-auto border-t border-[color:var(--line)] pt-4 pb-6 text-center text-xs text-[color:var(--muted)]">
+              <div className="mt-6 border-t border-[color:var(--line)] pt-4 pb-6 text-center text-xs text-[color:var(--muted)] shrink-0">
                 {/* Install PWA Button */}
                 <button
                   type="button"

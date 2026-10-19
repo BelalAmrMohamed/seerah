@@ -37,7 +37,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [377.06 KB, 6767 LOC]
+└── src/ [387.32 KB, 6947 LOC]
     ├── app/ [74.56 KB, 1667 LOC]
     │   ├── api/ [3.5 KB, 85 LOC]
     │   │   └── ai/ [3.5 KB, 85 LOC]
@@ -64,8 +64,8 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── layout.tsx
     │   └── page.tsx
     │
-    ├── components/ [131.51 KB, 3072 LOC]
-    │   ├── chat/ [26.29 KB, 655 LOC]
+    ├── components/ [139.84 KB, 3206 LOC]
+    │   ├── chat/ [26.79 KB, 661 LOC]
     │   │   ├── ChatHistoryDrawer.tsx
     │   │   ├── ChatMessageItem.tsx
     │   │   └── MarkdownContent.tsx
@@ -96,7 +96,7 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── stations.json
     │   └── types.ts
     │
-    ├── lib/ [43.33 KB, 1272 LOC]
+    ├── lib/ [45.27 KB, 1318 LOC]
     │   ├── supabase/ [4.93 KB, 197 LOC]
     │   │   ├── client.ts
     │   │   ├── middleware.ts
@@ -120,8 +120,8 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Directory | Lines of Code |
 |-----------|---------------|
-| `src` | 6767 |
-| `(root)` | 981 |
+| `src` | 6947 |
+| `(root)` | 989 |
 | `scripts` | 754 |
 | `public` | 114 |
 
@@ -132,27 +132,27 @@ The map is useful for quickly identifying the layout of the project, understandi
 | `src/data/stations.json` | 690 |
 | `stations.json` | 690 |
 | `src/components/Scene.tsx` | 674 |
-| `src/components/Header.tsx` | 482 |
-| `src/components/AiChat.tsx` | 472 |
+| `src/components/AiChat.tsx` | 625 |
+| `src/components/Header.tsx` | 457 |
 | `src/app/explore/page.tsx` | 441 |
+| `src/lib/chatStore.ts` | 360 |
 | `src/app/globals.css` | 357 |
 | `scripts/map.js` | 339 |
-| `src/lib/chatStore.ts` | 314 |
-| `src/components/chat/ChatHistoryDrawer.tsx` | 307 |
+| `src/components/chat/ChatHistoryDrawer.tsx` | 313 |
 
 ### Code Files
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 25 | 4290 | 183.4 KB |
-| .ts | 17 | 1441 | 50.21 KB |
+| .tsx | 25 | 4424 | 191.72 KB |
+| .ts | 17 | 1487 | 52.15 KB |
 | .json | 7 | 1527 | 490.58 KB |
 | .js | 5 | 812 | 28.08 KB |
 | .mjs | 2 | 15 | 726 B |
-| .md | 2 | 173 | 5.54 KB |
+| .md | 2 | 181 | 5.84 KB |
 | .css | 1 | 357 | 19.15 KB |
-| .tsbuildinfo | 1 | 1 | 458.11 KB |
-| **Total** | **60** | **8616** | **1.21 MB** |
+| .tsbuildinfo | 1 | 1 | 494.54 KB |
+| **Total** | **60** | **8804** | **1.25 MB** |
 
 ### Binary / Media Files (Physical Size)
 
@@ -164,4 +164,4 @@ The map is useful for quickly identifying the layout of the project, understandi
 | **Total** | **5** | **698.98 KB** |
 
 **Grand Total Files:** 65  
-**Total Repository Size:** 1.89 MB
+**Total Repository Size:** 1.94 MB

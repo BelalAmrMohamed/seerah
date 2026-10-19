@@ -33,6 +33,7 @@ interface ChatStoreState {
   toggleSidebar: () => void;
   setActiveSessionId: (id: string | null) => void;
   createNewSession: (stationId?: number, initialPrompt?: string) => string;
+  setSessionStationId: (sessionId: string, stationId: number | undefined) => void;
   deleteSession: (id: string) => void;
   togglePinSession: (id: string) => void;
   renameSession: (id: string, newTitle: string) => void;
@@ -116,6 +117,26 @@ export const useChatStore = create<ChatStoreState>()(
       setActiveSessionId: (id) => set({ activeSessionId: id }),
 
       createNewSession: (stationId, initialPrompt) => {
+        // If the current active session has zero messages, reuse it instead of creating duplicate blank sessions
+        const activeId = get().activeSessionId;
+        if (activeId) {
+          const active = get().sessions.find((s) => s.id === activeId);
+          if (active && Object.keys(active.messages || {}).length === 0) {
+            let title = active.title;
+            if (stationId !== undefined) {
+              const st = stations.find((s) => s.id === stationId);
+              title = st ? `سياق: محطة ${st.id} — ${st.title}` : "محادثة جديدة";
+            }
+            set((s) => ({
+              sessions: s.sessions.map((ses) =>
+                ses.id === active.id ? { ...ses, stationId, title, updatedAt: Date.now() } : ses
+              ),
+              sidebarOpen: false,
+            }));
+            return active.id;
+          }
+        }
+
         const id = "chat_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
         let title = "محادثة جديدة";
         if (stationId) {
@@ -142,6 +163,31 @@ export const useChatStore = create<ChatStoreState>()(
         }));
 
         return id;
+      },
+
+      setSessionStationId: (sessionId, stationId) => {
+        set((s) => ({
+          sessions: s.sessions.map((ses) => {
+            if (ses.id !== sessionId) return ses;
+            let newTitle = ses.title;
+            // If session has no messages or has a default station title, update title
+            const msgCount = Object.keys(ses.messages || {}).length;
+            if (msgCount === 0 || ses.title.startsWith("سياق: محطة ") || ses.title === "محادثة جديدة") {
+              if (stationId !== undefined) {
+                const st = stations.find((st) => st.id === stationId);
+                newTitle = st ? `سياق: محطة ${st.id} — ${st.title}` : "محادثة جديدة";
+              } else {
+                newTitle = "محادثة جديدة";
+              }
+            }
+            return {
+              ...ses,
+              stationId,
+              title: newTitle,
+              updatedAt: Date.now(),
+            };
+          }),
+        }));
       },
 
       deleteSession: (id) => {

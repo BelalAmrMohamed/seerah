@@ -16,6 +16,8 @@ import {
   Download,
   FileText,
   Printer,
+  ChevronDown,
+  Check,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useChatStore, getActiveThread, type ChatMessage } from "@/lib/chatStore";
@@ -42,6 +44,7 @@ export default function AiChat() {
   const activeSessionId = useChatStore((s) => s.activeSessionId);
   const setActiveSessionId = useChatStore((s) => s.setActiveSessionId);
   const createNewSession = useChatStore((s) => s.createNewSession);
+  const setSessionStationId = useChatStore((s) => s.setSessionStationId);
   const toggleSidebar = useChatStore((s) => s.toggleSidebar);
   const addMessage = useChatStore((s) => s.addMessage);
   const editPromptAndBranch = useChatStore((s) => s.editPromptAndBranch);
@@ -50,13 +53,28 @@ export default function AiChat() {
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [contextPickerOpen, setContextPickerOpen] = useState(false);
+  const [stationFilterQuery, setStationFilterQuery] = useState("");
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const contextPickerRef = useRef<HTMLDivElement>(null);
   const dragControls = useDragControls();
 
   // Find or create active session
   const currentSession = sessions.find((s) => s.id === activeSessionId) || sessions[0] || null;
+
+  // Handle outside clicks to close context picker dropdown
+  useEffect(() => {
+    if (!contextPickerOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (contextPickerRef.current && !contextPickerRef.current.contains(e.target as Node)) {
+        setContextPickerOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [contextPickerOpen]);
 
   useEffect(() => {
     if (open) {
@@ -68,6 +86,7 @@ export default function AiChat() {
       stopSpeaking();
       stopVoiceRecognition();
       setIsRecording(false);
+      setContextPickerOpen(false);
     }
   }, [open, currentSession, createNewSession, activeStation]);
 
@@ -85,7 +104,7 @@ export default function AiChat() {
 
     let sessionId = currentSession?.id;
     if (!sessionId) {
-      sessionId = createNewSession(activeStation || undefined, text.trim());
+      sessionId = createNewSession(undefined, text.trim());
     }
 
     // Add user message to branch
@@ -105,7 +124,7 @@ export default function AiChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: text.trim(),
-          stationContext: currentSession?.stationId || activeStation || undefined,
+          stationContext: currentSession?.stationId || undefined,
           history: historyPayload,
         }),
       });
@@ -156,7 +175,7 @@ export default function AiChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: newContent,
-          stationContext: currentSession.stationId || activeStation || undefined,
+          stationContext: currentSession.stationId || undefined,
           history: historyPayload,
         }),
       });
@@ -206,8 +225,15 @@ export default function AiChat() {
     }
   };
 
-  const stationContextId = currentSession?.stationId || activeStation;
+  const stationContextId = currentSession?.stationId;
   const currentStation = stationContextId ? stations.find((s) => s.id === stationContextId) : null;
+  const isNewChat = !currentSession || Object.keys(currentSession.messages || {}).length === 0;
+
+  const filteredStations = stations.filter((s) => {
+    if (!stationFilterQuery.trim()) return true;
+    const q = stationFilterQuery.trim().toLowerCase();
+    return s.title.toLowerCase().includes(q) || s.id.toString() === q;
+  });
 
   return (
     <AnimatePresence>
@@ -263,11 +289,11 @@ export default function AiChat() {
               {/* Window Header */}
               <div
                 onPointerDown={(e) => {
-                  if (!(e.target as HTMLElement).closest("button")) {
+                  if (!(e.target as HTMLElement).closest("button") && !(e.target as HTMLElement).closest("input")) {
                     dragControls.start(e);
                   }
                 }}
-                className="flex items-center justify-between border-b px-4 py-2 shrink-0 select-none cursor-grab active:cursor-grabbing touch-none"
+                className="flex items-center justify-between border-b px-4 py-2 shrink-0 select-none cursor-grab active:cursor-grabbing touch-none relative z-20"
                 style={{ borderColor: "var(--line)" }}
               >
                 {/* Title & Station Context */}
@@ -275,15 +301,139 @@ export default function AiChat() {
                   <div className="grid h-8 w-8 place-items-center rounded-full shrink-0" style={{ background: "color-mix(in srgb, var(--accent) 20%, transparent)" }}>
                     <Sparkles size={16} style={{ color: "var(--accent)" }} />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex flex-col justify-center">
                     <span className="font-ui text-sm font-semibold text-[color:var(--ink)] block truncate">
                       {currentSession?.title || "المساعد الذكي"}
                     </span>
-                    {currentStation && (
-                      <p className="text-[11px] text-[color:var(--muted)] truncate max-w-[200px]">
-                        سياق: محطة {ar(currentStation.id)} — {currentStation.title}
-                      </p>
-                    )}
+                    
+                    {/* Interactive Station Context Selector Pill & Dropdown */}
+                    <div className="relative flex items-center gap-1 mt-0.5" ref={contextPickerRef}>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setContextPickerOpen(!contextPickerOpen);
+                        }}
+                        className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-ui transition-all border cursor-pointer hover:border-[color:var(--accent)] select-none shrink-0"
+                        style={{
+                          background: currentStation
+                            ? "color-mix(in srgb, var(--accent) 12%, var(--panel))"
+                            : "color-mix(in srgb, var(--ink) 5%, var(--panel))",
+                          borderColor: currentStation
+                            ? "color-mix(in srgb, var(--accent) 35%, var(--line))"
+                            : "var(--line)",
+                          color: currentStation ? "var(--accent)" : "var(--muted)",
+                        }}
+                        title="انقر لتغيير محطة السياق أو اختيار السيرة كاملة"
+                      >
+                        <span className="truncate max-w-[140px] sm:max-w-[180px]">
+                          {currentStation ? `محطة ${ar(currentStation.id)}: ${currentStation.title}` : "السياق: السيرة كاملة"}
+                        </span>
+                        <ChevronDown size={10} className={`shrink-0 transition-transform ${contextPickerOpen ? "rotate-180" : ""}`} />
+                      </button>
+
+                      {currentStation && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (currentSession) {
+                              setSessionStationId(currentSession.id, undefined);
+                              toast.success("تم إزالة حصر المحطة (السياق: السيرة كاملة)");
+                            }
+                          }}
+                          className="rounded p-0.5 text-[color:var(--muted)] hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                          title="إلغاء حصر السياق (العودة للسيرة كاملة)"
+                          aria-label="إلغاء حصر السياق"
+                        >
+                          <X size={11} />
+                        </button>
+                      )}
+
+                      {/* Context Picker Dropdown Popover */}
+                      {contextPickerOpen && (
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          className="absolute start-0 top-full mt-1.5 w-64 sm:w-72 rounded-xl border border-[color:var(--line)] bg-[color:var(--solid)] p-2 shadow-2xl z-40 space-y-1.5 text-xs font-ui"
+                          style={{ boxShadow: "0 16px 36px rgba(0,0,0,0.4)" }}
+                        >
+                          <div className="px-1 pt-0.5 pb-1">
+                            <p className="font-semibold text-[color:var(--ink)] text-xs">سياق إجابات المساعد:</p>
+                            <p className="text-[10px] text-[color:var(--muted)]">اختر محطة محددة أو السيرة النبوية كاملة</p>
+                          </div>
+
+                          <input
+                            type="text"
+                            placeholder="ابحث عن محطة بالاسم أو الرقم…"
+                            value={stationFilterQuery}
+                            onChange={(e) => setStationFilterQuery(e.target.value)}
+                            className="w-full rounded-lg border border-[color:var(--line)] bg-[color:var(--panel)] px-2.5 py-1.5 text-xs text-[color:var(--ink)] outline-none placeholder:text-[color:var(--muted)] focus:border-[color:var(--accent)]"
+                            autoFocus
+                          />
+
+                          <div className="max-h-48 overflow-y-auto space-y-0.5 pe-1" data-lenis-prevent>
+                            {/* General / All Seerah option */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (currentSession) {
+                                  setSessionStationId(currentSession.id, undefined);
+                                  toast.success("تم تعيين السياق: السيرة كاملة");
+                                }
+                                setContextPickerOpen(false);
+                              }}
+                              className={`w-full flex items-center justify-between rounded-lg px-2 py-1.5 text-xs text-start transition-colors cursor-pointer ${
+                                !currentStation
+                                  ? "bg-[color:color-mix(in_srgb,var(--accent)_15%,var(--panel))] text-[color:var(--accent)] font-semibold"
+                                  : "text-[color:var(--ink)] hover:bg-[color:var(--panel)]"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <span>📖</span>
+                                <span>السيرة كاملة (عام — بدون حصر)</span>
+                              </div>
+                              {!currentStation && <Check size={13} />}
+                            </button>
+
+                            <div className="h-px bg-[color:var(--line)] my-1" />
+
+                            {/* List of stations */}
+                            {filteredStations.map((st) => {
+                              const isSelected = currentStation?.id === st.id;
+                              return (
+                                <button
+                                  key={st.id}
+                                  type="button"
+                                  onClick={() => {
+                                    if (currentSession) {
+                                      setSessionStationId(currentSession.id, st.id);
+                                      toast.success(`تم ضبط السياق: محطة ${st.id} — ${st.title}`);
+                                    }
+                                    setContextPickerOpen(false);
+                                  }}
+                                  className={`w-full flex items-center justify-between rounded-lg px-2 py-1.5 text-xs text-start transition-colors cursor-pointer ${
+                                    isSelected
+                                      ? "bg-[color:color-mix(in_srgb,var(--accent)_15%,var(--panel))] text-[color:var(--accent)] font-semibold"
+                                      : "text-[color:var(--ink)] hover:bg-[color:var(--panel)]"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <span className="font-display text-xs w-5 text-center text-[color:var(--accent)]">
+                                      {ar(st.id)}
+                                    </span>
+                                    <span className="truncate">{st.title}</span>
+                                  </div>
+                                  {isSelected && <Check size={13} className="shrink-0 text-[color:var(--accent)]" />}
+                                </button>
+                              );
+                            })}
+                            {filteredStations.length === 0 && (
+                              <p className="text-center py-3 text-xs text-[color:var(--muted)]">لا توجد محطة مطابقة</p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -293,11 +443,14 @@ export default function AiChat() {
                   <button
                     type="button"
                     onClick={() => {
+                      if (isNewChat) return;
                       createNewSession(stationContextId);
                       toast.success("تم بدء محادثة جديدة");
                     }}
-                    className="rounded-lg p-1.5 text-[color:var(--muted)] hover:text-[color:var(--ink)] hover:bg-[color:var(--line)] transition-colors cursor-pointer"
-                    title="محادثة جديدة"
+                    disabled={isNewChat}
+                    className="rounded-lg p-1.5 text-[color:var(--muted)] hover:text-[color:var(--ink)] hover:bg-[color:var(--line)] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-[color:var(--muted)]"
+                    title={isNewChat ? "أنت في محادثة جديدة بالفعل" : "محادثة جديدة"}
+                    aria-label="محادثة جديدة"
                   >
                     <Plus size={16} />
                   </button>
