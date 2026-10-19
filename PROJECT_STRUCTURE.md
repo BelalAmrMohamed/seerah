@@ -9,29 +9,19 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 ```text
 رحلة في السيرة/
-├── capture_tab1.cjs
-├── check_dom_46.cjs
-├── check_pages.cjs
-├── clear_sw.cjs
-├── find_css.cjs
-├── inspect_cache.cjs
-├── inspect_tab1.cjs
-├── inspect_window.cjs
-├── maximize.cjs
 ├── next.config.ts
 ├── package-lock.json
 ├── package.json
 ├── postcss.config.mjs
 ├── PROJECT_STRUCTURE.md
-├── read_log.cjs
 ├── README.md
-├── scratch_html.html
-├── scratch_test.cjs
 ├── stations.json
-├── tab1_screenshot.png
-├── test_new_tab.cjs
 ├── tsconfig.json
 ├── tsconfig.tsbuildinfo
+├── docs/ [1.13 MB, 3 LOC]
+│   ├── image.png
+│   └── issues.md
+│
 ├── public/ [761.69 KB, 114 LOC]
 │   ├── data/ [59.86 KB, 1 LOC]
 │   │   └── arabia-dots.json
@@ -135,9 +125,10 @@ The map is useful for quickly identifying the layout of the project, understandi
 | Directory | Lines of Code |
 |-----------|---------------|
 | `src` | 6947 |
-| `(root)` | 1349 |
+| `(root)` | 1005 |
 | `scripts` | 754 |
 | `public` | 114 |
+| `docs` | 3 |
 
 ### Top 10 Largest Code Files
 
@@ -160,24 +151,22 @@ The map is useful for quickly identifying the layout of the project, understandi
 |-----------|-------|---------------|------------|
 | .tsx | 25 | 4424 | 191.72 KB |
 | .ts | 17 | 1487 | 52.15 KB |
-| .cjs | 12 | 319 | 10.08 KB |
 | .json | 7 | 1527 | 490.58 KB |
 | .js | 5 | 812 | 28.08 KB |
+| .md | 3 | 200 | 6.58 KB |
 | .mjs | 2 | 15 | 726 B |
-| .md | 2 | 197 | 6.26 KB |
-| .html | 1 | 25 | 358.72 KB |
 | .css | 1 | 357 | 19.15 KB |
 | .tsbuildinfo | 1 | 1 | 494.54 KB |
-| **Total** | **73** | **9164** | **1.61 MB** |
+| **Total** | **61** | **8823** | **1.25 MB** |
 
 ### Binary / Media Files (Physical Size)
 
 | Extension | Files | Size |
 |-----------|-------|------------|
-| .png | 3 | 709.73 KB |
+| .png | 3 | 1.55 MB |
 | .jpg | 2 | 251.77 KB |
 | .svg | 1 | 19.74 KB |
-| **Total** | **6** | **981.24 KB** |
+| **Total** | **6** | **1.82 MB** |
 
-**Grand Total Files:** 79  
-**Total Repository Size:** 2.57 MB
+**Grand Total Files:** 67  
+**Total Repository Size:** 3.07 MB
