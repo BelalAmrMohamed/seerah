@@ -9,7 +9,6 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 ```text
 رحلة في السيرة/
-├── belal-amr-mohamed.zip
 ├── next.config.ts
 ├── package-lock.json
 ├── package.json
@@ -139,7 +138,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 |-----------|-------|---------------|------------|
 | .tsx | 22 | 3421 | 148.09 KB |
 | .ts | 14 | 692 | 27.58 KB |
-| .json | 7 | 1525 | 432.9 KB |
+| .json | 7 | 1525 | 432.87 KB |
 | .js | 5 | 812 | 28.08 KB |
 | .mjs | 2 | 15 | 726 B |
 | .md | 2 | 175 | 5.59 KB |
@@ -153,9 +152,8 @@ The map is useful for quickly identifying the layout of the project, understandi
 |-----------|-------|------------|
 | .jpg | 2 | 251.77 KB |
 | .png | 2 | 427.47 KB |
-| .zip | 1 | 897.47 KB |
 | .svg | 1 | 19.74 KB |
-| **Total** | **6** | **1.56 MB** |
+| **Total** | **5** | **698.98 KB** |
 
-**Grand Total Files:** 60  
-**Total Repository Size:** 2.65 MB
+**Grand Total Files:** 59  
+**Total Repository Size:** 1.78 MB
