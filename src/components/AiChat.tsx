@@ -1,18 +1,35 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion, useDragControls } from "motion/react";
 import { useAppStore } from "@/lib/store";
 import { ar, stations } from "@/lib/stations";
-import { Send, X, Sparkles, MessageCircle, Loader2 } from "lucide-react";
-
-type Message = { role: "user" | "assistant"; content: string };
+import {
+  Send,
+  X,
+  Sparkles,
+  MessageCircle,
+  Loader2,
+  Mic,
+  MicOff,
+  History,
+  Plus,
+  Download,
+  FileText,
+  Printer,
+} from "lucide-react";
+import { toast } from "sonner";
+import { useChatStore, getActiveThread, type ChatMessage } from "@/lib/chatStore";
+import { startVoiceRecognition, stopVoiceRecognition, isSpeechRecognitionSupported, stopSpeaking } from "@/lib/speech";
+import { downloadSessionMarkdown, printSessionPdf } from "@/lib/chatExport";
+import ChatMessageItem from "./chat/ChatMessageItem";
+import ChatHistoryDrawer from "./chat/ChatHistoryDrawer";
 
 const SUGGESTIONS = [
-  "من هي حليمة السعدية؟",
-  "ماذا حدث في غار حراء؟",
-  "كيف كانت هجرة النبي ﷺ؟",
-  "ما هي غزوة بدر؟",
-  "لماذا سُمّي عام الحزن؟",
+  "من هي حليمة السعدية وما دورها في طفولة النبي ﷺ؟",
+  "ماذا حدث في غار حراء عند نزول الوحي لأول مرة؟",
+  "كيف كانت هجرة النبي ﷺ من مكة إلى المدينة؟",
+  "ما هي أحداث غزوة بدر الكبرى ونتائجها؟",
+  "لماذا سُمّي عام الحزن بهذا الاسم وماذا جرى فيه؟",
 ];
 
 export default function AiChat() {
@@ -20,66 +37,182 @@ export default function AiChat() {
   const setOpen = useAppStore((s) => s.setAiChatOpen);
   const activeStation = useAppStore((s) => s.activeStation);
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  // Chat Store
+  const sessions = useChatStore((s) => s.sessions);
+  const activeSessionId = useChatStore((s) => s.activeSessionId);
+  const setActiveSessionId = useChatStore((s) => s.setActiveSessionId);
+  const createNewSession = useChatStore((s) => s.createNewSession);
+  const toggleSidebar = useChatStore((s) => s.toggleSidebar);
+  const addMessage = useChatStore((s) => s.addMessage);
+  const editPromptAndBranch = useChatStore((s) => s.editPromptAndBranch);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dragControls = useDragControls();
 
+  // Find or create active session
+  const currentSession = sessions.find((s) => s.id === activeSessionId) || sessions[0] || null;
+
   useEffect(() => {
     if (open) {
+      if (!currentSession) {
+        createNewSession(activeStation || undefined);
+      }
       setTimeout(() => inputRef.current?.focus(), 150);
+    } else {
+      stopSpeaking();
+      stopVoiceRecognition();
+      setIsRecording(false);
     }
-  }, [open]);
+  }, [open, currentSession, createNewSession, activeStation]);
 
+  // Active messages thread (from root to current branch leaf)
+  const thread = getActiveThread(currentSession);
+
+  // Auto-scroll on new messages
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages]);
+  }, [thread.length, loading]);
 
-  const sendMessage = async (text: string) => {
+  // Send message
+  const handleSendMessage = async (text: string, customParentId?: string) => {
     if (!text.trim() || loading) return;
 
-    const userMsg: Message = { role: "user", content: text.trim() };
-    setMessages((prev) => [...prev, userMsg]);
+    let sessionId = currentSession?.id;
+    if (!sessionId) {
+      sessionId = createNewSession(activeStation || undefined, text.trim());
+    }
+
+    // Add user message to branch
+    const userMsgId = addMessage(sessionId, "user", text.trim(), customParentId);
     setInput("");
     setLoading(true);
 
     try {
+      // Build past history for multi-turn context
+      const currentThread = getActiveThread(useChatStore.getState().sessions.find((s) => s.id === sessionId));
+      const historyPayload = currentThread
+        .filter((m) => m.id !== userMsgId)
+        .map((m) => ({ role: m.role, content: m.content }));
+
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: text.trim(),
-          stationContext: activeStation || undefined,
+          stationContext: currentSession?.stationId || activeStation || undefined,
+          history: historyPayload,
         }),
       });
 
       const data = await res.json();
 
       if (data.error) {
-        setMessages((prev) => [...prev, { role: "assistant", content: `⚠️ ${data.error}` }]);
+        addMessage(sessionId, "assistant", `⚠️ ${data.error}`, userMsgId);
       } else {
-        setMessages((prev) => [...prev, { role: "assistant", content: data.response }]);
+        addMessage(sessionId, "assistant", data.response, userMsgId);
       }
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: "⚠️ حدث خطأ في الاتصال. حاول مرة أخرى." }]);
+      addMessage(sessionId, "assistant", "⚠️ حدث خطأ في الاتصال بمحرك الذكاء. يرجى المحاولة مرة أخرى.", userMsgId);
     } finally {
       setLoading(false);
     }
   };
 
+  // Submit handler
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sendMessage(input);
+    if (isRecording) {
+      stopVoiceRecognition();
+      setIsRecording(false);
+    }
+    handleSendMessage(input);
   };
 
-  const currentStation = stations.find((s) => s.id === activeStation);
+  // Edit user prompt and branch conversation
+  const handleEditPrompt = async (messageId: string, newContent: string) => {
+    if (!currentSession || loading) return;
+
+    const sessionId = currentSession.id;
+    // Creates a new user message branch with parent equal to original's parent
+    const newUserMsgId = editPromptAndBranch(sessionId, messageId, newContent);
+    setLoading(true);
+
+    try {
+      // Find thread up to this new branch message
+      const updatedSession = useChatStore.getState().sessions.find((s) => s.id === sessionId);
+      const currentThread = getActiveThread(updatedSession);
+      const historyPayload = currentThread
+        .filter((m) => m.id !== newUserMsgId)
+        .map((m) => ({ role: m.role, content: m.content }));
+
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: newContent,
+          stationContext: currentSession.stationId || activeStation || undefined,
+          history: historyPayload,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        addMessage(sessionId, "assistant", `⚠️ ${data.error}`, newUserMsgId);
+      } else {
+        addMessage(sessionId, "assistant", data.response, newUserMsgId);
+      }
+    } catch {
+      addMessage(sessionId, "assistant", "⚠️ حدث خطأ أثناء تحديث الإجابة.", newUserMsgId);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Voice Dictation Toggle
+  const handleToggleVoice = () => {
+    if (!isSpeechRecognitionSupported()) {
+      toast.error("المتصفح الحالي لا يدعم التعرف الصوتي");
+      return;
+    }
+
+    if (isRecording) {
+      stopVoiceRecognition();
+      setIsRecording(false);
+    } else {
+      setIsRecording(true);
+      toast.info("جارٍ الاستماع... تحدث الآن باللغة العربية");
+
+      startVoiceRecognition({
+        onStart: () => setIsRecording(true),
+        onTranscript: (spokenText) => {
+          setInput((prev) => {
+            const trimmed = prev.trim();
+            return trimmed ? `${trimmed} ${spokenText}` : spokenText;
+          });
+        },
+        onEnd: () => setIsRecording(false),
+        onError: (err) => {
+          setIsRecording(false);
+          toast.error(`خطأ في التعرف الصوتي: ${err}`);
+        },
+      });
+    }
+  };
+
+  const stationContextId = currentSession?.stationId || activeStation;
+  const currentStation = stationContextId ? stations.find((s) => s.id === stationContextId) : null;
 
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 pointer-events-none" role="dialog" aria-modal="true" aria-label="المساعد الذكي">
+        <div className="fixed inset-0 z-50 pointer-events-none select-none" role="dialog" aria-modal="true" aria-label="المساعد الذكي">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -107,14 +240,17 @@ export default function AiChat() {
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={{ y: 30, opacity: 0, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 340, damping: 28 }}
-              className="pointer-events-auto flex w-full max-w-lg flex-col rounded-2xl border shadow-2xl overflow-hidden bg-[color:var(--solid)] relative z-10"
+              className="pointer-events-auto flex w-full max-w-xl flex-col rounded-2xl border shadow-2xl overflow-hidden bg-[color:var(--solid)] relative z-10 select-text"
               style={{
                 borderColor: "var(--line)",
-                boxShadow: "0 20px 60px rgba(0,0,0,.5)",
-                height: "min(520px, calc(100dvh - 80px))",
-                maxHeight: "calc(100dvh - 80px)",
+                boxShadow: "0 24px 64px rgba(0,0,0,.55)",
+                height: "min(560px, calc(100dvh - 75px))",
+                maxHeight: "calc(100dvh - 75px)",
               }}
             >
+              {/* History Sidebar Component inside the Chat Window */}
+              <ChatHistoryDrawer currentStationId={stationContextId} />
+
               {/* Drag Handle Bar */}
               <div
                 onPointerDown={(e) => dragControls.start(e)}
@@ -124,22 +260,25 @@ export default function AiChat() {
                 <div className="h-1.5 w-12 rounded-full bg-[color:var(--line)] hover:bg-[color:var(--accent)] transition-colors" />
               </div>
 
-              {/* Header */}
+              {/* Window Header */}
               <div
                 onPointerDown={(e) => {
                   if (!(e.target as HTMLElement).closest("button")) {
                     dragControls.start(e);
                   }
                 }}
-                className="flex items-center justify-between border-b px-4 py-2 sm:px-5 shrink-0 select-none cursor-grab active:cursor-grabbing touch-none"
+                className="flex items-center justify-between border-b px-4 py-2 shrink-0 select-none cursor-grab active:cursor-grabbing touch-none"
                 style={{ borderColor: "var(--line)" }}
               >
-                <div className="flex items-center gap-2.5">
+                {/* Title & Station Context */}
+                <div className="flex items-center gap-2.5 min-w-0">
                   <div className="grid h-8 w-8 place-items-center rounded-full shrink-0" style={{ background: "color-mix(in srgb, var(--accent) 20%, transparent)" }}>
                     <Sparkles size={16} style={{ color: "var(--accent)" }} />
                   </div>
                   <div className="min-w-0">
-                    <span className="font-ui text-sm font-semibold text-[color:var(--ink)] block">المساعد الذكي</span>
+                    <span className="font-ui text-sm font-semibold text-[color:var(--ink)] block truncate">
+                      {currentSession?.title || "المساعد الذكي"}
+                    </span>
                     {currentStation && (
                       <p className="text-[11px] text-[color:var(--muted)] truncate max-w-[200px]">
                         سياق: محطة {ar(currentStation.id)} — {currentStation.title}
@@ -147,37 +286,108 @@ export default function AiChat() {
                     )}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg p-1.5 transition-colors hover:bg-[color:var(--line)] cursor-pointer text-[color:var(--muted)] hover:text-[color:var(--ink)]"
-                  aria-label="إغلاق المساعد الذكي"
-                >
-                  <X size={18} />
-                </button>
+
+                {/* Header Action Tools */}
+                <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                  {/* New Chat Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      createNewSession(stationContextId);
+                      toast.success("تم بدء محادثة جديدة");
+                    }}
+                    className="rounded-lg p-1.5 text-[color:var(--muted)] hover:text-[color:var(--ink)] hover:bg-[color:var(--line)] transition-colors cursor-pointer"
+                    title="محادثة جديدة"
+                  >
+                    <Plus size={16} />
+                  </button>
+
+                  {/* History Sessions Drawer Toggle */}
+                  <button
+                    type="button"
+                    onClick={toggleSidebar}
+                    className="rounded-lg p-1.5 text-[color:var(--muted)] hover:text-[color:var(--ink)] hover:bg-[color:var(--line)] transition-colors cursor-pointer"
+                    title="سجل المحادثات"
+                  >
+                    <History size={16} />
+                  </button>
+
+                  {/* Export Menu Dropdown */}
+                  {currentSession && thread.length > 0 && (
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setShowExportMenu(!showExportMenu)}
+                        className="rounded-lg p-1.5 text-[color:var(--muted)] hover:text-[color:var(--ink)] hover:bg-[color:var(--line)] transition-colors cursor-pointer"
+                        title="تصدير المحادثة"
+                      >
+                        <Download size={16} />
+                      </button>
+
+                      {showExportMenu && (
+                        <div className="absolute end-0 top-full mt-1 w-36 rounded-xl border border-[color:var(--line)] bg-[color:var(--solid)] p-1 shadow-2xl z-30 space-y-0.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowExportMenu(false);
+                              downloadSessionMarkdown(currentSession);
+                              toast.success("تم تنزيل ملف Markdown");
+                            }}
+                            className="w-full flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-start hover:bg-[color:var(--panel)] text-[color:var(--ink)] cursor-pointer"
+                          >
+                            <FileText size={13} />
+                            <span>تصدير Markdown</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowExportMenu(false);
+                              printSessionPdf(currentSession);
+                            }}
+                            className="w-full flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-start hover:bg-[color:var(--panel)] text-[color:var(--ink)] cursor-pointer"
+                          >
+                            <Printer size={13} />
+                            <span>طباعة / حفظ PDF</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Close Window */}
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg p-1.5 transition-colors hover:bg-[color:var(--line)] cursor-pointer text-[color:var(--muted)] hover:text-[color:var(--ink)]"
+                    aria-label="إغلاق المساعد الذكي"
+                  >
+                    <X size={17} />
+                  </button>
+                </div>
               </div>
 
               {/* Messages Body */}
-              <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto p-3.5 sm:p-4" data-lenis-prevent>
-                {messages.length === 0 ? (
-                  <div className="grid gap-3.5 py-2 text-center">
+              <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4" data-lenis-prevent>
+                {thread.length === 0 ? (
+                  <div className="grid gap-3.5 py-3 text-center">
                     <div>
-                      <MessageCircle size={30} className="mx-auto mb-1.5 text-[color:var(--accent)] opacity-70" />
+                      <MessageCircle size={32} className="mx-auto mb-2 text-[color:var(--accent)] opacity-80" />
                       <p className="font-ui text-sm font-medium text-[color:var(--ink)]">
-                        اسأل عن أي شيء في السيرة النبوية
+                        اسأل عن أي تفصيل في السيرة النبوية
                       </p>
-                      <p className="text-[11px] text-[color:var(--muted)] mt-0.5">
-                        إجابات موثقة ومستندة إلى كتاب ابن هشام
+                      <p className="text-xs text-[color:var(--muted)] mt-0.5">
+                        إجابات مدعمة ومستندة إلى نصوص ابن هشام في السيرة
                       </p>
                     </div>
-                    <div className="grid gap-1.5 text-start mt-1">
-                      <p className="label text-[11px] text-[color:var(--muted)] px-1">أسئلة مقترحة:</p>
+
+                    <div className="grid gap-1.5 text-start mt-2">
+                      <p className="label text-xs text-[color:var(--muted)] px-1">أسئلة مقترحة للبدء:</p>
                       {SUGGESTIONS.map((q) => (
                         <button
                           key={q}
                           type="button"
-                          onClick={() => sendMessage(q)}
-                          className="rounded-xl border px-3 py-2 text-start font-ui text-xs sm:text-sm transition-all hover:border-[color:var(--accent)] hover:bg-[color:color-mix(in_srgb,var(--accent)_8%,transparent)] cursor-pointer text-[color:var(--ink)] active:scale-[0.99]"
+                          onClick={() => handleSendMessage(q)}
+                          className="rounded-xl border px-3.5 py-2.5 text-start font-ui text-xs sm:text-sm transition-all hover:border-[color:var(--accent)] hover:bg-[color:color-mix(in_srgb,var(--accent)_8%,transparent)] cursor-pointer text-[color:var(--ink)] active:scale-[0.99]"
                           style={{ borderColor: "var(--line)" }}
                         >
                           {q}
@@ -186,52 +396,59 @@ export default function AiChat() {
                     </div>
                   </div>
                 ) : (
-                  <div className="grid gap-2.5">
-                    {messages.map((msg, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 font-ui text-xs sm:text-sm leading-[1.8] sm:leading-[1.9] ${
-                          msg.role === "user" ? "mr-auto" : "ml-auto"
-                        }`}
-                        style={{
-                          background: msg.role === "user"
-                            ? "color-mix(in srgb, var(--accent) 15%, transparent)"
-                            : "var(--panel)",
-                          borderColor: "var(--line)",
-                          whiteSpace: "pre-wrap",
-                        }}
-                      >
-                        {msg.content}
-                      </motion.div>
+                  <div className="space-y-4">
+                    {thread.map((msg) => (
+                      <ChatMessageItem
+                        key={msg.id}
+                        session={currentSession!}
+                        message={msg}
+                        onEditSubmit={handleEditPrompt}
+                      />
                     ))}
+
+                    {/* Thinking Loader */}
                     {loading && (
-                      <div className="ml-auto flex items-center gap-2 rounded-2xl px-3.5 py-2.5" style={{ background: "var(--panel)" }}>
-                        <Loader2 size={14} className="animate-spin" style={{ color: "var(--accent)" }} />
-                        <span className="font-ui text-xs" style={{ color: "var(--muted)" }}>يفكر...</span>
+                      <div className="flex items-center gap-2 rounded-2xl px-4 py-3 bg-[color:var(--panel)] border border-[color:var(--line)] w-fit">
+                        <Loader2 size={15} className="animate-spin text-[color:var(--accent)]" />
+                        <span className="font-ui text-xs text-[color:var(--muted)]">المساعد الذكي يفكر ويستخرج النص...</span>
                       </div>
                     )}
                   </div>
                 )}
               </div>
 
-              {/* Input Form: Firmly pinned inside visible card bounds */}
+              {/* Input Form with Voice Dictation */}
               <form
                 onSubmit={handleSubmit}
                 className="flex items-center gap-2 border-t p-2.5 sm:p-3 shrink-0 bg-[color:var(--solid)] z-10"
                 style={{ borderColor: "var(--line)" }}
               >
+                {/* Voice Recognition Microphone Button */}
+                <button
+                  type="button"
+                  onClick={handleToggleVoice}
+                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition-all cursor-pointer ${
+                    isRecording
+                      ? "bg-rose-500 text-white animate-pulse ring-4 ring-rose-500/30"
+                      : "border border-[color:var(--line)] bg-[color:var(--panel)] text-[color:var(--muted)] hover:text-[color:var(--accent)] hover:border-[color:var(--accent)]"
+                  }`}
+                  title={isRecording ? "إيقاف التسجيل الصوتي" : "تحدث بصوتك (إملاء صوتي)"}
+                >
+                  {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
+                </button>
+
+                {/* Prompt Text Input */}
                 <input
                   ref={inputRef}
                   type="text"
                   className="input !rounded-xl !py-2.5 !text-sm flex-1 bg-[color:var(--panel)] text-[color:var(--ink)] placeholder:text-[color:var(--muted)]"
-                  placeholder="اكتب سؤالك هنا عن السيرة…"
+                  placeholder={isRecording ? "جارٍ الاستماع إليك... تحدث الآن" : "اكتب سؤالك هنا عن السيرة النبوية…"}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={loading}
                 />
+
+                {/* Send Button */}
                 <button
                   type="submit"
                   disabled={!input.trim() || loading}

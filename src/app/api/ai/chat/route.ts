@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { message, stationContext } = await req.json();
+    const { message, stationContext, history } = await req.json();
 
     if (!message || typeof message !== "string") {
       return NextResponse.json({ error: "الرسالة مطلوبة" }, { status: 400 });
@@ -47,11 +47,31 @@ export async function POST(req: Request) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-flash-lite-latest" });
 
-    const result = await model.generateContent({
-      contents: [
-        { role: "user", parts: [{ text: SYSTEM_PROMPT + context + "\n\nسؤال المستخدم: " + message }] },
-      ],
+    // Build multi-turn contents array with system instruction & past history
+    const contents: { role: string; parts: { text: string }[] }[] = [
+      { role: "user", parts: [{ text: SYSTEM_PROMPT + context }] },
+      { role: "model", parts: [{ text: "أهلاً بك، أنا جاهز للإجابة بدقة عن أحداث وشخصيات السيرة النبوية الشريفة استناداً إلى كتاب ابن هشام." }] },
+    ];
+
+    if (Array.isArray(history)) {
+      // Include last 8 turns max to conserve context tokens and maintain speed
+      const recentHistory = history.slice(-8);
+      for (const h of recentHistory) {
+        if (h.content && (h.role === "user" || h.role === "assistant")) {
+          contents.push({
+            role: h.role === "assistant" ? "model" : "user",
+            parts: [{ text: h.content }],
+          });
+        }
+      }
+    }
+
+    contents.push({
+      role: "user",
+      parts: [{ text: message }],
     });
+
+    const result = await model.generateContent({ contents });
 
     const response = result.response.text();
 

@@ -37,11 +37,11 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [319.05 KB, 5146 LOC]
-    ├── app/ [73.73 KB, 1647 LOC]
-    │   ├── api/ [2.67 KB, 65 LOC]
-    │   │   └── ai/ [2.67 KB, 65 LOC]
-    │   │       └── chat/ [2.67 KB, 65 LOC]
+└── src/ [377.06 KB, 6767 LOC]
+    ├── app/ [74.56 KB, 1667 LOC]
+    │   ├── api/ [3.5 KB, 85 LOC]
+    │   │   └── ai/ [3.5 KB, 85 LOC]
+    │   │       └── chat/ [3.5 KB, 85 LOC]
     │   │           └── ... (max depth reached)
     │   │
     │   ├── auth/ [10.35 KB, 247 LOC]
@@ -64,7 +64,12 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── layout.tsx
     │   └── page.tsx
     │
-    ├── components/ [96.15 KB, 2200 LOC]
+    ├── components/ [131.51 KB, 3072 LOC]
+    │   ├── chat/ [26.29 KB, 655 LOC]
+    │   │   ├── ChatHistoryDrawer.tsx
+    │   │   ├── ChatMessageItem.tsx
+    │   │   └── MarkdownContent.tsx
+    │   │
     │   ├── three/ [6.66 KB, 127 LOC]
     │   │   └── Stage.tsx
     │   │
@@ -91,15 +96,18 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── stations.json
     │   └── types.ts
     │
-    ├── lib/ [21.53 KB, 543 LOC]
+    ├── lib/ [43.33 KB, 1272 LOC]
     │   ├── supabase/ [4.93 KB, 197 LOC]
     │   │   ├── client.ts
     │   │   ├── middleware.ts
     │   │   ├── server.ts
     │   │   └── types.ts
     │   │
+    │   ├── chatExport.ts
+    │   ├── chatStore.ts
     │   ├── effects.ts
     │   ├── scroll.tsx
+    │   ├── speech.ts
     │   ├── stations.ts
     │   └── store.ts
     │
@@ -112,8 +120,8 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Directory | Lines of Code |
 |-----------|---------------|
-| `src` | 5146 |
-| `(root)` | 979 |
+| `src` | 6767 |
+| `(root)` | 981 |
 | `scripts` | 754 |
 | `public` | 114 |
 
@@ -125,26 +133,26 @@ The map is useful for quickly identifying the layout of the project, understandi
 | `stations.json` | 690 |
 | `src/components/Scene.tsx` | 674 |
 | `src/components/Header.tsx` | 482 |
+| `src/components/AiChat.tsx` | 472 |
 | `src/app/explore/page.tsx` | 441 |
 | `src/app/globals.css` | 357 |
 | `scripts/map.js` | 339 |
-| `src/components/AiChat.tsx` | 255 |
-| `scripts/release.js` | 240 |
-| `src/app/station/[id]/page.tsx` | 219 |
+| `src/lib/chatStore.ts` | 314 |
+| `src/components/chat/ChatHistoryDrawer.tsx` | 307 |
 
 ### Code Files
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 22 | 3418 | 148.03 KB |
-| .ts | 14 | 692 | 27.58 KB |
-| .json | 7 | 1525 | 432.89 KB |
+| .tsx | 25 | 4290 | 183.4 KB |
+| .ts | 17 | 1441 | 50.21 KB |
+| .json | 7 | 1527 | 490.58 KB |
 | .js | 5 | 812 | 28.08 KB |
 | .mjs | 2 | 15 | 726 B |
 | .md | 2 | 173 | 5.54 KB |
 | .css | 1 | 357 | 19.15 KB |
 | .tsbuildinfo | 1 | 1 | 458.11 KB |
-| **Total** | **54** | **6993** | **1.09 MB** |
+| **Total** | **60** | **8616** | **1.21 MB** |
 
 ### Binary / Media Files (Physical Size)
 
@@ -155,5 +163,5 @@ The map is useful for quickly identifying the layout of the project, understandi
 | .svg | 1 | 19.74 KB |
 | **Total** | **5** | **698.98 KB** |
 
-**Grand Total Files:** 59  
-**Total Repository Size:** 1.78 MB
+**Grand Total Files:** 65  
+**Total Repository Size:** 1.89 MB
