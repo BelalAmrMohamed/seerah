@@ -5,7 +5,7 @@ const STATIC_ASSETS = [
   "/shamsah-favicon-64.png",
   "/shamsah-icon-1024.png",
   "/shamsah-icon.svg",
-  "/og.jpg",
+  "/thumbnail.jpg",
 ];
 
 // Install: Pre-cache critical assets
