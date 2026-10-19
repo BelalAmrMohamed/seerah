@@ -9,6 +9,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 ```text
 رحلة في السيرة/
+├── belal-amr-mohamed.zip
 ├── next.config.ts
 ├── package-lock.json
 ├── package.json
@@ -113,7 +114,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 | Directory | Lines of Code |
 |-----------|---------------|
 | `src` | 5149 |
-| `(root)` | 978 |
+| `(root)` | 981 |
 | `scripts` | 754 |
 | `public` | 114 |
 
@@ -141,10 +142,10 @@ The map is useful for quickly identifying the layout of the project, understandi
 | .json | 7 | 1525 | 432.9 KB |
 | .js | 5 | 812 | 28.08 KB |
 | .mjs | 2 | 15 | 726 B |
-| .md | 2 | 172 | 5.5 KB |
+| .md | 2 | 175 | 5.59 KB |
 | .css | 1 | 357 | 19.15 KB |
 | .tsbuildinfo | 1 | 1 | 458.11 KB |
-| **Total** | **54** | **6995** | **1.09 MB** |
+| **Total** | **54** | **6998** | **1.09 MB** |
 
 ### Binary / Media Files (Physical Size)
 
@@ -152,8 +153,9 @@ The map is useful for quickly identifying the layout of the project, understandi
 |-----------|-------|------------|
 | .jpg | 2 | 251.77 KB |
 | .png | 2 | 427.47 KB |
+| .zip | 1 | 897.47 KB |
 | .svg | 1 | 19.74 KB |
-| **Total** | **5** | **698.98 KB** |
+| **Total** | **6** | **1.56 MB** |
 
-**Grand Total Files:** 59  
-**Total Repository Size:** 1.78 MB
+**Grand Total Files:** 60  
+**Total Repository Size:** 2.65 MB
