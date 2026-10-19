@@ -1,14 +1,13 @@
 /// Service Worker for رحلة في السيرة PWA
-const CACHE_NAME = "rihla-seerah-v1";
+const CACHE_NAME = "rihla-seerah-v2";
 const STATIC_ASSETS = [
-  "/",
   "/shamsah-favicon-64.png",
   "/shamsah-icon-1024.png",
   "/shamsah-icon.svg",
   "/thumbnail.jpg",
 ];
 
-// Install: Pre-cache critical assets
+// Install: Pre-cache critical image assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
@@ -28,21 +27,33 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch: Network-first strategy for pages, cache-first for assets
+// Fetch handler
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Only handle same-origin requests
-  if (url.origin !== location.origin) return;
+  // Never intercept localhost / development requests
+  if (url.hostname === "localhost" || url.hostname === "127.0.0.1") {
+    return;
+  }
 
-  // For navigation requests (HTML pages), use network-first
+  // Only handle same-origin GET requests
+  if (url.origin !== location.origin || request.method !== "GET") return;
+
+  // Next.js internal chunks and hot reload: always fetch from network
+  if (url.pathname.startsWith("/_next/")) {
+    return;
+  }
+
+  // Navigation requests (HTML pages): Network-first with fallback to cache
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
           return response;
         })
         .catch(() => caches.match(request))
@@ -50,17 +61,17 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // For static assets, use cache-first
-  if (
-    url.pathname.match(/\.(png|jpg|jpeg|svg|webp|css|js|woff2?|ttf|otf)$/)
-  ) {
+  // Static images & fonts: Cache-first
+  if (url.pathname.match(/\.(png|jpg|jpeg|svg|webp|woff2?|ttf|otf)$/)) {
     event.respondWith(
       caches.match(request).then(
         (cached) =>
           cached ||
           fetch(request).then((response) => {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            if (response && response.status === 200) {
+              const clone = response.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            }
             return response;
           })
       )

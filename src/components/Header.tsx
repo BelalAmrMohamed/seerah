@@ -292,7 +292,11 @@ export default function Header() {
                     <Link
                       href="/auth"
                       onClick={() => setMenuOpen(false)}
-                      className="btn-primary !py-1.5 !px-3.5 !text-xs whitespace-nowrap shrink-0"
+                      className="rounded-xl px-4 py-2 text-xs font-semibold font-ui transition-all hover:opacity-90 active:scale-95 whitespace-nowrap shrink-0 shadow-sm"
+                      style={{
+                        background: "var(--accent)",
+                        color: "var(--bg)",
+                      }}
                     >
                       تسجيل الدخول
                     </Link>

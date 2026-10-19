@@ -22,7 +22,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── image.png
 │   └── issues.md
 │
-├── public/ [761.69 KB, 114 LOC]
+├── public/ [762.07 KB, 125 LOC]
 │   ├── data/ [59.86 KB, 1 LOC]
 │   │   └── arabia-dots.json
 │   │
@@ -41,15 +41,15 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [387.32 KB, 6947 LOC]
-    ├── app/ [74.56 KB, 1667 LOC]
+└── src/ [388.58 KB, 6979 LOC]
+    ├── app/ [74.92 KB, 1676 LOC]
     │   ├── api/ [3.5 KB, 85 LOC]
     │   │   └── ai/ [3.5 KB, 85 LOC]
     │   │       └── chat/ [3.5 KB, 85 LOC]
     │   │           └── ... (max depth reached)
     │   │
-    │   ├── auth/ [10.35 KB, 247 LOC]
-    │   │   ├── callback/ [1.29 KB, 40 LOC]
+    │   ├── auth/ [10.44 KB, 252 LOC]
+    │   │   ├── callback/ [1.38 KB, 45 LOC]
     │   │   │   └── route.ts
     │   │   │
     │   │   └── page.tsx
@@ -68,7 +68,7 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── layout.tsx
     │   └── page.tsx
     │
-    ├── components/ [139.84 KB, 3206 LOC]
+    ├── components/ [140.74 KB, 3229 LOC]
     │   ├── chat/ [26.79 KB, 661 LOC]
     │   │   ├── ChatHistoryDrawer.tsx
     │   │   ├── ChatMessageItem.tsx
@@ -124,10 +124,10 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Directory | Lines of Code |
 |-----------|---------------|
-| `src` | 6947 |
+| `src` | 6979 |
 | `(root)` | 994 |
 | `scripts` | 754 |
-| `public` | 114 |
+| `public` | 125 |
 | `docs` | 3 |
 
 ### Top 10 Largest Code Files
@@ -138,10 +138,10 @@ The map is useful for quickly identifying the layout of the project, understandi
 | `stations.json` | 690 |
 | `src/components/Scene.tsx` | 674 |
 | `src/components/AiChat.tsx` | 625 |
-| `src/components/Header.tsx` | 457 |
+| `src/components/Header.tsx` | 461 |
 | `src/app/explore/page.tsx` | 441 |
+| `src/app/globals.css` | 361 |
 | `src/lib/chatStore.ts` | 360 |
-| `src/app/globals.css` | 357 |
 | `scripts/map.js` | 339 |
 | `src/components/chat/ChatHistoryDrawer.tsx` | 313 |
 
@@ -149,15 +149,15 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 25 | 4424 | 191.72 KB |
-| .ts | 17 | 1487 | 52.15 KB |
+| .tsx | 25 | 4447 | 192.62 KB |
+| .ts | 17 | 1492 | 52.24 KB |
 | .json | 7 | 1527 | 490.58 KB |
-| .js | 5 | 812 | 28.08 KB |
-| .md | 3 | 189 | 6.07 KB |
+| .js | 5 | 823 | 28.47 KB |
+| .md | 3 | 189 | 6.24 KB |
 | .mjs | 2 | 15 | 726 B |
-| .css | 1 | 357 | 19.15 KB |
+| .css | 1 | 361 | 19.42 KB |
 | .tsbuildinfo | 1 | 1 | 494.54 KB |
-| **Total** | **61** | **8812** | **1.25 MB** |
+| **Total** | **61** | **8855** | **1.25 MB** |
 
 ### Binary / Media Files (Physical Size)
 
