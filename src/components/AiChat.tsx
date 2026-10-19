@@ -77,7 +77,7 @@ export default function AiChat() {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-end justify-start p-4 md:items-end md:p-6"
+          className="fixed inset-0 z-50 flex items-end justify-start p-3 sm:p-4 md:items-end md:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

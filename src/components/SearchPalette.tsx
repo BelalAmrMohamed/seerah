@@ -22,8 +22,8 @@ export default function SearchPalette() {
     <Command.Dialog open={open} onOpenChange={setOpen} label="البحث في المحطات" dir="rtl"
       filter={(value, search) => (normalize(value).includes(normalize(search)) ? 1 : 0)}
       overlayClassName="fixed inset-0 z-[60] bg-black/55 backdrop-blur-sm"
-      contentClassName="fixed left-1/2 top-[14vh] z-[70] w-[min(92vw,40rem)] -translate-x-1/2 overflow-hidden rounded-2xl border shadow-2xl [background:var(--solid)] [border-color:var(--line)]">
-      <Command.Input autoFocus placeholder="ابحث عن محطة أو شخصية أو مكان…" className="w-full border-b bg-transparent px-6 py-5 text-xl outline-none [border-color:var(--line)]" />
+      contentClassName="fixed left-1/2 top-[8vh] sm:top-[14vh] z-[70] w-[min(94vw,40rem)] -translate-x-1/2 overflow-hidden rounded-2xl border shadow-2xl [background:var(--solid)] [border-color:var(--line)]">
+      <Command.Input autoFocus placeholder="ابحث عن محطة أو شخصية أو مكان…" className="w-full border-b bg-transparent px-4 py-3.5 sm:px-6 sm:py-5 text-base sm:text-xl outline-none [border-color:var(--line)]" />
       <Command.List className="max-h-[52vh] overflow-y-auto p-2" data-lenis-prevent>
         <Command.Empty className="px-4 py-8 text-center" style={{ color: "var(--muted)" }}>لا توجد محطة مطابقة. جرّب اسم شخصية أو مكان.</Command.Empty>
         {stations.map((s) => (

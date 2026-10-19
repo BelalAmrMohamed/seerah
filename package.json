@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "dots": "node scripts/build-dots.mjs"
+    "dots": "node scripts/build-dots.mjs",
+    "map": "node scripts/map.js",
+    "commit": "node scripts/commit.js",
+    "release": "node scripts/release.js",
+    "zip": "node scripts/map.js && node scripts/commit.js && git archive --format=zip --output=belal-amr-mohamed.zip HEAD && echo belal-amr-mohamed.zip is ready",
+    "push": "npm run zip && git switch production && git merge main && git push && git switch main",
+    "push:all": "npm run zip && git push && npm run push"
   },
   "dependencies": {
     "@fontsource/amiri": "^5.3.0",
