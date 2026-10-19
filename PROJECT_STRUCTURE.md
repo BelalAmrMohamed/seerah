@@ -37,7 +37,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [319.12 KB, 5149 LOC]
+└── src/ [319.05 KB, 5146 LOC]
     ├── app/ [73.73 KB, 1647 LOC]
     │   ├── api/ [2.67 KB, 65 LOC]
     │   │   └── ai/ [2.67 KB, 65 LOC]
@@ -64,7 +64,7 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── layout.tsx
     │   └── page.tsx
     │
-    ├── components/ [96.21 KB, 2203 LOC]
+    ├── components/ [96.15 KB, 2200 LOC]
     │   ├── three/ [6.66 KB, 127 LOC]
     │   │   └── Stage.tsx
     │   │
@@ -112,7 +112,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Directory | Lines of Code |
 |-----------|---------------|
-| `src` | 5149 |
+| `src` | 5146 |
 | `(root)` | 979 |
 | `scripts` | 754 |
 | `public` | 114 |
@@ -128,7 +128,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 | `src/app/explore/page.tsx` | 441 |
 | `src/app/globals.css` | 357 |
 | `scripts/map.js` | 339 |
-| `src/components/AiChat.tsx` | 258 |
+| `src/components/AiChat.tsx` | 255 |
 | `scripts/release.js` | 240 |
 | `src/app/station/[id]/page.tsx` | 219 |
 
@@ -136,7 +136,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 22 | 3421 | 148.09 KB |
+| .tsx | 22 | 3418 | 148.03 KB |
 | .ts | 14 | 692 | 27.58 KB |
 | .json | 7 | 1525 | 432.89 KB |
 | .js | 5 | 812 | 28.08 KB |
@@ -144,7 +144,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 | .md | 2 | 173 | 5.54 KB |
 | .css | 1 | 357 | 19.15 KB |
 | .tsbuildinfo | 1 | 1 | 458.11 KB |
-| **Total** | **54** | **6996** | **1.09 MB** |
+| **Total** | **54** | **6993** | **1.09 MB** |
 
 ### Binary / Media Files (Physical Size)
 

@@ -79,47 +79,47 @@ export default function AiChat() {
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true" aria-label="المساعد الذكي">
+        <div className="fixed inset-0 z-50 pointer-events-none" role="dialog" aria-modal="true" aria-label="المساعد الذكي">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
             onClick={() => setOpen(false)}
           />
 
-          {/* Bottom Sheet Container */}
-          <div className="absolute inset-x-0 bottom-0 flex justify-center pointer-events-none p-0 sm:p-4 md:p-6">
+          {/* Chat Window Container */}
+          <div className="absolute inset-0 flex items-start justify-center p-3 sm:p-6 pointer-events-none pt-14 sm:pt-16">
             <motion.div
               drag="y"
               dragListener={false}
               dragControls={dragControls}
-              dragConstraints={{ top: 0, bottom: 0 }}
-              dragElastic={{ top: 0.05, bottom: 0.7 }}
+              dragConstraints={{ top: -80, bottom: 350 }}
+              dragElastic={{ top: 0.08, bottom: 0.6 }}
               onDragEnd={(_, info) => {
-                if (info.offset.y > 100 || info.velocity.y > 400) {
+                if (info.offset.y > 130 || info.velocity.y > 450) {
                   setOpen(false);
                 }
               }}
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", stiffness: 320, damping: 32 }}
-              className="pointer-events-auto flex w-full max-w-lg flex-col rounded-t-3xl sm:rounded-2xl border-t sm:border shadow-2xl overflow-hidden bg-[color:var(--solid)]"
+              initial={{ y: -20, opacity: 0, scale: 0.96 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 30, opacity: 0, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 340, damping: 28 }}
+              className="pointer-events-auto flex w-full max-w-lg flex-col rounded-2xl border shadow-2xl overflow-hidden bg-[color:var(--solid)] relative z-10"
               style={{
                 borderColor: "var(--line)",
-                boxShadow: "0 -10px 40px rgba(0,0,0,.45)",
-                height: "min(78vh, 580px)",
-                maxHeight: "min(78vh, 580px)",
+                boxShadow: "0 20px 60px rgba(0,0,0,.5)",
+                height: "min(520px, calc(100dvh - 80px))",
+                maxHeight: "calc(100dvh - 80px)",
               }}
             >
-              {/* Drag Handle (Active touch area for dragging sheet) */}
+              {/* Drag Handle Bar */}
               <div
                 onPointerDown={(e) => dragControls.start(e)}
-                className="w-full pt-3 pb-1 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing touch-none shrink-0 select-none"
-                title="اسحب لأسفل للإغلاق"
+                className="w-full pt-2.5 pb-1 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing touch-none shrink-0 select-none"
+                title="اسحب للتحريك أو لأسفل للإغلاق"
               >
                 <div className="h-1.5 w-12 rounded-full bg-[color:var(--line)] hover:bg-[color:var(--accent)] transition-colors" />
               </div>
@@ -127,11 +127,11 @@ export default function AiChat() {
               {/* Header */}
               <div
                 onPointerDown={(e) => {
-                  if ((e.target as HTMLElement).tagName !== "BUTTON" && !(e.target as HTMLElement).closest("button")) {
+                  if (!(e.target as HTMLElement).closest("button")) {
                     dragControls.start(e);
                   }
                 }}
-                className="flex items-center justify-between border-b px-4 py-2.5 sm:px-5 shrink-0 select-none cursor-grab active:cursor-grabbing touch-none"
+                className="flex items-center justify-between border-b px-4 py-2 sm:px-5 shrink-0 select-none cursor-grab active:cursor-grabbing touch-none"
                 style={{ borderColor: "var(--line)" }}
               >
                 <div className="flex items-center gap-2.5">
@@ -157,7 +157,7 @@ export default function AiChat() {
                 </button>
               </div>
 
-              {/* Messages Body (Flex-1 min-h-0 with internal scrolling) */}
+              {/* Messages Body */}
               <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto p-3.5 sm:p-4" data-lenis-prevent>
                 {messages.length === 0 ? (
                   <div className="grid gap-3.5 py-2 text-center">
@@ -217,19 +217,16 @@ export default function AiChat() {
                 )}
               </div>
 
-              {/* Input Form: Fixed firmly at bottom, always 100% visible */}
+              {/* Input Form: Firmly pinned inside visible card bounds */}
               <form
                 onSubmit={handleSubmit}
                 className="flex items-center gap-2 border-t p-2.5 sm:p-3 shrink-0 bg-[color:var(--solid)] z-10"
-                style={{
-                  borderColor: "var(--line)",
-                  paddingBottom: "max(0.6rem, env(safe-area-inset-bottom))",
-                }}
+                style={{ borderColor: "var(--line)" }}
               >
                 <input
                   ref={inputRef}
                   type="text"
-                  className="input !rounded-xl !py-2 text-sm flex-1 bg-[color:var(--panel)] text-[color:var(--ink)]"
+                  className="input !rounded-xl !py-2.5 !text-sm flex-1 bg-[color:var(--panel)] text-[color:var(--ink)] placeholder:text-[color:var(--muted)]"
                   placeholder="اكتب سؤالك هنا عن السيرة…"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -238,14 +235,14 @@ export default function AiChat() {
                 <button
                   type="submit"
                   disabled={!input.trim() || loading}
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-all disabled:opacity-40 cursor-pointer shadow-sm"
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-xl transition-all disabled:opacity-40 cursor-pointer shadow-sm text-white"
                   style={{
                     background: "var(--era-grad, var(--accent))",
                     color: "var(--bg)",
                   }}
                   aria-label="إرسال السؤال"
                 >
-                  <Send size={15} />
+                  <Send size={16} />
                 </button>
               </form>
             </motion.div>
