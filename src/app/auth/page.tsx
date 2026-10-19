@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAppStore } from "@/lib/store";
+import { AlertCircle, AlertTriangle, Info, X } from "lucide-react";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">("login");
@@ -22,9 +23,63 @@ export default function AuthPage() {
     });
   }, [router]);
 
+  const [alert, setAlert] = useState<{ type: "error" | "info" | "warning"; text: string } | null>(null);
+
+  const getFriendlyAuthErrorMessage = (err: unknown): string => {
+    if (!(err instanceof Error)) return "حدث خطأ غير متوقع، يرجى المحاولة لاحقاً.";
+    const msg = err.message || "";
+    const lower = msg.toLowerCase();
+
+    // Supabase Email / API Rate Limiting
+    if (
+      lower.includes("rate limit") ||
+      lower.includes("rate_limit") ||
+      lower.includes("too many requests") ||
+      lower.includes("over_email_send_rate_limit")
+    ) {
+      return "تم تجاوز الحد المسموح لإرسال الرسائل من مزود الخدمة (Supabase Rate Limit). إذا لم تصلك رسالة التفعيل، يرجى الانتظار بضع دقائق، أو استخدام «المتابعة مع Google» للدخول الفوري.";
+    }
+    if (lower.includes("for security purposes") || lower.includes("once every")) {
+      return "لدواعي الأمان، يسمح بطلب واحد كل 60 ثانية. يرجى الانتظار دقيقة ثم إعادة المحاولة.";
+    }
+
+    // Invalid login credentials
+    if (lower.includes("invalid login credentials")) {
+      return "بيانات الدخول غير صحيحة. إذا كنت قد سجلت عبر Google سابقاً، يرجى استخدام زر Google. أو تأكد من تفعيل الحساب من رابط البريد أولاً.";
+    }
+
+    // Email not confirmed
+    if (lower.includes("email not confirmed")) {
+      return "لم يتم تفعيل هذا الحساب بعد. يرجى مراجعة بريدك الإلكتروني (بما في ذلك مجلد الرسائل غير المرغوب فيها Spam) والضغط على رابط التفعيل.";
+    }
+
+    // User already registered
+    if (lower.includes("user already registered") || lower.includes("already registered")) {
+      return "هذا البريد الإلكتروني مسجل بالفعل. يرجى التبديل إلى «تسجيل الدخول» أو المتابعة مع Google.";
+    }
+
+    // Weak password
+    if (lower.includes("password should be at least") || lower.includes("password is too short")) {
+      return "كلمة المرور قصيرة جداً؛ يجب أن تتكون من 6 أحرف أو أرقام على الأقل.";
+    }
+
+    // Network / Brave Shields / fetch failure
+    if (lower.includes("failed to fetch")) {
+      return "تعذر الاتصال بخوادم المصادقة. يرجى التأكد من اتصال الإنترنت أو إيقاف مانع الإعلانات (Brave Shields).";
+    }
+
+    // Email format invalid
+    if (lower.includes("invalid email") || lower.includes("unable to validate email address")) {
+      return "صيغة البريد الإلكتروني غير صالحة. يرجى التحقق من كتابته بشكل صحيح.";
+    }
+
+    return msg || "حدث خطأ أثناء المصادقة.";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setAlert(null);
     const supabase = createClient();
 
     try {
@@ -36,11 +91,20 @@ export default function AuthPage() {
         });
         if (error) throw error;
 
+        // When account already exists (e.g. from Google OAuth), Supabase returns user with empty identities
+        if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+          const warnText = "هذا البريد الإلكتروني مسجل مسبقاً! إذا كنت قد سجلت عبر Google سابقاً، يرجى تسجيل الدخول بالضغط على «المتابعة مع Google» بالأسفل.";
+          setAlert({ type: "warning", text: warnText });
+          toast.warning("هذا البريد مسجل مسبقاً");
+          setMode("login");
+          return;
+        }
+
         // If email confirmation is enabled in Supabase, session is null until confirmed
         if (data.user && !data.session) {
-          toast.info("تم إنشاء الحساب! أرسلنا رابط تأكيد إلى بريدك الإلكتروني. يرجى تفعيله للمتابعة.", {
-            duration: 6000,
-          });
+          const infoText = "تم إنشاء الحساب بنجاح! أرسلنا رابط تأكيد إلى بريدك الإلكتروني. تنبيه: قد تتأخر الرسالة بسبب قيود مزود البريد (Rate Limit) أو تصل لمجلد الرسائل غير المرغوب فيها (Spam). كما يمكنك الدخول فوراً عبر Google.";
+          setAlert({ type: "info", text: infoText });
+          toast.info("يرجى مراجعة بريدك الإلكتروني ومجلد Spam لتفعيل الحساب", { duration: 7000 });
           setMode("login");
           return;
         }
@@ -64,20 +128,26 @@ export default function AuthPage() {
         }
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "حدث خطأ";
-      toast.error(message);
+      const friendlyMessage = getFriendlyAuthErrorMessage(err);
+      setAlert({ type: "error", text: friendlyMessage });
+      toast.error(friendlyMessage);
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
+    setAlert(null);
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
-    if (error) toast.error(error.message);
+    if (error) {
+      const friendly = getFriendlyAuthErrorMessage(error);
+      setAlert({ type: "error", text: friendly });
+      toast.error(friendly);
+    }
   };
 
   return (
@@ -129,7 +199,10 @@ export default function AuthPage() {
                   color: mode === "login" ? "var(--ink)" : "var(--muted)",
                   boxShadow: mode === "login" ? "var(--shadow)" : "none",
                 }}
-                onClick={() => setMode("login")}
+                onClick={() => {
+                  setMode("login");
+                  setAlert(null);
+                }}
               >
                 تسجيل الدخول
               </button>
@@ -140,11 +213,62 @@ export default function AuthPage() {
                   color: mode === "signup" ? "var(--ink)" : "var(--muted)",
                   boxShadow: mode === "signup" ? "var(--shadow)" : "none",
                 }}
-                onClick={() => setMode("signup")}
+                onClick={() => {
+                  setMode("signup");
+                  setAlert(null);
+                }}
               >
                 حساب جديد
               </button>
             </div>
+
+            {/* Alert banner */}
+            {alert && (
+              <div
+                className="relative flex items-start gap-3 rounded-2xl p-4 text-xs sm:text-sm leading-relaxed border animate-in fade-in duration-200"
+                style={{
+                  background:
+                    alert.type === "error"
+                      ? "color-mix(in srgb, var(--error, #ef4444) 12%, var(--panel))"
+                      : alert.type === "warning"
+                      ? "color-mix(in srgb, var(--warning, #f59e0b) 14%, var(--panel))"
+                      : "color-mix(in srgb, var(--accent) 14%, var(--panel))",
+                  borderColor:
+                    alert.type === "error"
+                      ? "color-mix(in srgb, var(--error, #ef4444) 40%, transparent)"
+                      : alert.type === "warning"
+                      ? "color-mix(in srgb, var(--warning, #f59e0b) 45%, transparent)"
+                      : "color-mix(in srgb, var(--accent) 45%, transparent)",
+                }}
+              >
+                <div
+                  className="shrink-0 mt-0.5"
+                  style={{
+                    color:
+                      alert.type === "error"
+                        ? "var(--error, #ef4444)"
+                        : alert.type === "warning"
+                        ? "var(--warning, #f59e0b)"
+                        : "var(--accent)",
+                  }}
+                >
+                  {alert.type === "error" && <AlertCircle size={17} />}
+                  {alert.type === "warning" && <AlertTriangle size={17} />}
+                  {alert.type === "info" && <Info size={17} />}
+                </div>
+                <div className="flex-1 text-[color:var(--ink)] font-normal">
+                  {alert.text}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAlert(null)}
+                  className="shrink-0 opacity-60 hover:opacity-100 transition-opacity p-0.5 text-[color:var(--muted)]"
+                  aria-label="إغلاق التنبيه"
+                >
+                  <X size={15} />
+                </button>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="grid gap-5">
               {mode === "signup" && (

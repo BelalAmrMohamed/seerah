@@ -41,14 +41,14 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [390.47 KB, 7007 LOC]
-    ├── app/ [75.72 KB, 1686 LOC]
+└── src/ [397.29 KB, 7131 LOC]
+    ├── app/ [82.54 KB, 1810 LOC]
     │   ├── api/ [3.5 KB, 85 LOC]
     │   │   └── ai/ [3.5 KB, 85 LOC]
     │   │       └── chat/ [3.5 KB, 85 LOC]
     │   │           └── ... (max depth reached)
     │   │
-    │   ├── auth/ [10.89 KB, 262 LOC]
+    │   ├── auth/ [17.71 KB, 386 LOC]
     │   │   ├── callback/ [1.42 KB, 45 LOC]
     │   │   │   └── route.ts
     │   │   │
@@ -124,7 +124,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Directory | Lines of Code |
 |-----------|---------------|
-| `src` | 7007 |
+| `src` | 7131 |
 | `(root)` | 994 |
 | `scripts` | 754 |
 | `public` | 125 |
@@ -142,22 +142,22 @@ The map is useful for quickly identifying the layout of the project, understandi
 | `src/app/explore/page.tsx` | 441 |
 | `src/app/globals.css` | 361 |
 | `src/lib/chatStore.ts` | 360 |
+| `src/app/auth/page.tsx` | 341 |
 | `scripts/map.js` | 339 |
-| `src/components/chat/ChatHistoryDrawer.tsx` | 313 |
 
 ### Code Files
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 25 | 4475 | 194.12 KB |
+| .tsx | 25 | 4599 | 200.94 KB |
 | .ts | 17 | 1492 | 52.28 KB |
 | .json | 7 | 1527 | 490.58 KB |
 | .js | 5 | 823 | 28.55 KB |
-| .md | 3 | 189 | 6.07 KB |
+| .md | 3 | 189 | 6.24 KB |
 | .mjs | 2 | 15 | 726 B |
 | .css | 1 | 361 | 19.77 KB |
-| .tsbuildinfo | 1 | 1 | 494.54 KB |
-| **Total** | **61** | **8883** | **1.26 MB** |
+| .tsbuildinfo | 1 | 1 | 494.55 KB |
+| **Total** | **61** | **9007** | **1.26 MB** |
 
 ### Binary / Media Files (Physical Size)
 
@@ -169,4 +169,4 @@ The map is useful for quickly identifying the layout of the project, understandi
 | **Total** | **6** | **1.82 MB** |
 
 **Grand Total Files:** 67  
-**Total Repository Size:** 3.07 MB
+**Total Repository Size:** 3.08 MB
