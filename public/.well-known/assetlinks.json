@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.alseerah",
+        "sha256_cert_fingerprints": ["16:C0:53:42:04:2C:82:FD:8E:96:17:71:AE:39:C9:35:F1:AA:66:69:97:7C:A5:3B:5A:21:4A:FB:28:DF:6F:B0"]
+      }
+    }]

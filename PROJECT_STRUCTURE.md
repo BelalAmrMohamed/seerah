@@ -40,7 +40,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── shamsah-icon.svg
 │   └── thumbnail.jpg
 │
-├── scripts/ [30.34 KB, 839 LOC]
+├── scripts/ [30.42 KB, 839 LOC]
 │   ├── build-dots.mjs
 │   ├── commit.js
 │   ├── gen-sw.mjs
@@ -49,8 +49,8 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [397.3 KB, 7131 LOC]
-    ├── app/ [82.55 KB, 1810 LOC]
+└── src/ [397.45 KB, 7131 LOC]
+    ├── app/ [82.69 KB, 1810 LOC]
     │   ├── api/ [3.5 KB, 85 LOC]
     │   │   └── ai/ [3.5 KB, 85 LOC]
     │   │       └── chat/ [3.5 KB, 85 LOC]
@@ -157,13 +157,13 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 25 | 4599 | 200.95 KB |
+| .tsx | 25 | 4599 | 201.09 KB |
 | .ts | 17 | 1492 | 52.28 KB |
 | .json | 6 | 1485 | 489.61 KB |
-| .mjs | 4 | 100 | 4.11 KB |
+| .mjs | 4 | 100 | 4.19 KB |
 | .js | 4 | 741 | 26.29 KB |
-| .md | 3 | 199 | 6.39 KB |
-| .webmanifest | 1 | 24 | 921 B |
+| .md | 3 | 199 | 6.57 KB |
+| .webmanifest | 1 | 24 | 944 B |
 | .tgz | 1 | 2004 | 496.25 KB |
 | .css | 1 | 361 | 19.77 KB |
 | .tsbuildinfo | 1 | 1 | 494.55 KB |
