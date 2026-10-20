@@ -133,7 +133,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 | Directory | Lines of Code |
 |-----------|---------------|
 | `src` | 7131 |
-| `(root)` | 2998 |
+| `(root)` | 3008 |
 | `scripts` | 839 |
 | `public` | 25 |
 | `docs` | 3 |
@@ -162,12 +162,12 @@ The map is useful for quickly identifying the layout of the project, understandi
 | .json | 6 | 1485 | 489.61 KB |
 | .mjs | 4 | 100 | 4.11 KB |
 | .js | 4 | 741 | 26.29 KB |
-| .md | 3 | 189 | 6.05 KB |
+| .md | 3 | 199 | 6.39 KB |
 | .webmanifest | 1 | 24 | 921 B |
 | .tgz | 1 | 2004 | 496.25 KB |
 | .css | 1 | 361 | 19.77 KB |
 | .tsbuildinfo | 1 | 1 | 494.55 KB |
-| **Total** | **63** | **10996** | **1.75 MB** |
+| **Total** | **63** | **11006** | **1.75 MB** |
 
 ### Binary / Media Files (Physical Size)
 
