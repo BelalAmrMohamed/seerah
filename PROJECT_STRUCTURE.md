@@ -162,7 +162,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 | .json | 6 | 1485 | 489.61 KB |
 | .mjs | 4 | 100 | 4.19 KB |
 | .js | 4 | 741 | 26.29 KB |
-| .md | 3 | 199 | 6.4 KB |
+| .md | 3 | 199 | 6.57 KB |
 | .webmanifest | 1 | 24 | 944 B |
 | .tgz | 1 | 2004 | 496.25 KB |
 | .css | 1 | 361 | 19.77 KB |
