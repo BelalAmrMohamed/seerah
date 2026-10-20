@@ -43,14 +43,14 @@ export const metadata: Metadata = {
   ],
   metadataBase: new URL(siteUrl),
   alternates: { canonical: "/" },
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
   icons: {
     icon: [
       { url: "/shamsah-favicon-64.png", sizes: "64x64", type: "image/png" },
       { url: "/shamsah-icon.svg", type: "image/svg+xml" },
     ],
     apple: [
-      { url: "/shamsah-icon-1024.png", sizes: "1024x1024", type: "image/png" },
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
     shortcut: "/shamsah-favicon-64.png",
   },

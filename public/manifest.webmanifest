@@ -1,0 +1,23 @@
+{
+  "name": "رحلة في السيرة",
+  "short_name": "السيرة",
+  "description": "ثلاثون محطة من السيرة النبوية لابن هشام، تُروى بالنور والحركة.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0b0f1e",
+  "background_color": "#0b0f1e",
+  "categories": ["education", "books"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "/thumbnail.jpg", "sizes": "1200x630", "type": "image/jpeg", "form_factor": "wide", "label": "رحلة في السيرة" }
+  ]
+}
