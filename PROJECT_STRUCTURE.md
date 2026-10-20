@@ -14,6 +14,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 ├── package.json
 ├── postcss.config.mjs
 ├── PROJECT_STRUCTURE.md
+├── pwa-changes (1).tgz
 ├── README.md
 ├── stations.json
 ├── tsconfig.json
@@ -22,27 +23,34 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── image.png
 │   └── issues.md
 │
-├── public/ [762.15 KB, 125 LOC]
+├── public/ [1.22 MB, 25 LOC]
 │   ├── data/ [59.86 KB, 1 LOC]
 │   │   └── arabia-dots.json
 │   │
-│   ├── manifest.json
+│   ├── icons/ [494.05 KB, 0 LOC]
+│   │   ├── apple-touch-icon.png
+│   │   ├── icon-192.png
+│   │   ├── icon-512.png
+│   │   └── maskable-512.png
+│   │
+│   ├── manifest.webmanifest
 │   ├── screenshot.jpg
 │   ├── shamsah-favicon-64.png
 │   ├── shamsah-icon-1024.png
 │   ├── shamsah-icon.svg
-│   ├── sw.js
 │   └── thumbnail.jpg
 │
-├── scripts/ [26.94 KB, 754 LOC]
+├── scripts/ [30.34 KB, 839 LOC]
 │   ├── build-dots.mjs
 │   ├── commit.js
+│   ├── gen-sw.mjs
 │   ├── git-changes.js
+│   ├── make-icons.mjs
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [397.29 KB, 7131 LOC]
-    ├── app/ [82.54 KB, 1810 LOC]
+└── src/ [397.3 KB, 7131 LOC]
+    ├── app/ [82.55 KB, 1810 LOC]
     │   ├── api/ [3.5 KB, 85 LOC]
     │   │   └── ai/ [3.5 KB, 85 LOC]
     │   │       └── chat/ [3.5 KB, 85 LOC]
@@ -125,15 +133,16 @@ The map is useful for quickly identifying the layout of the project, understandi
 | Directory | Lines of Code |
 |-----------|---------------|
 | `src` | 7131 |
-| `(root)` | 994 |
-| `scripts` | 754 |
-| `public` | 125 |
+| `(root)` | 2998 |
+| `scripts` | 839 |
+| `public` | 25 |
 | `docs` | 3 |
 
 ### Top 10 Largest Code Files
 
 | File | Lines of Code |
 |------|---------------|
+| `pwa-changes (1).tgz` | 2004 |
 | `src/data/stations.json` | 690 |
 | `stations.json` | 690 |
 | `src/components/Scene.tsx` | 674 |
@@ -143,30 +152,31 @@ The map is useful for quickly identifying the layout of the project, understandi
 | `src/app/globals.css` | 361 |
 | `src/lib/chatStore.ts` | 360 |
 | `src/app/auth/page.tsx` | 341 |
-| `scripts/map.js` | 339 |
 
 ### Code Files
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 25 | 4599 | 200.94 KB |
+| .tsx | 25 | 4599 | 200.95 KB |
 | .ts | 17 | 1492 | 52.28 KB |
-| .json | 7 | 1527 | 490.58 KB |
-| .js | 5 | 823 | 28.55 KB |
+| .json | 6 | 1485 | 489.61 KB |
+| .mjs | 4 | 100 | 4.11 KB |
+| .js | 4 | 741 | 26.29 KB |
 | .md | 3 | 189 | 6.05 KB |
-| .mjs | 2 | 15 | 726 B |
+| .webmanifest | 1 | 24 | 921 B |
+| .tgz | 1 | 2004 | 496.25 KB |
 | .css | 1 | 361 | 19.77 KB |
 | .tsbuildinfo | 1 | 1 | 494.55 KB |
-| **Total** | **61** | **9007** | **1.26 MB** |
+| **Total** | **63** | **10996** | **1.75 MB** |
 
 ### Binary / Media Files (Physical Size)
 
 | Extension | Files | Size |
 |-----------|-------|------------|
-| .png | 3 | 1.55 MB |
+| .png | 7 | 2.03 MB |
 | .jpg | 2 | 251.77 KB |
 | .svg | 1 | 19.74 KB |
-| **Total** | **6** | **1.82 MB** |
+| **Total** | **10** | **2.3 MB** |
 
-**Grand Total Files:** 67  
-**Total Repository Size:** 3.08 MB
+**Grand Total Files:** 73  
+**Total Repository Size:** 4.05 MB
