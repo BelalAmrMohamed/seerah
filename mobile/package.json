@@ -1,43 +1,55 @@
 {
-  "name": "seerah-mobile",
+  "name": "rihla-fi-alseera-mobile",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
     "@expo-google-fonts/amiri": "^0.4.1",
-    "@expo-google-fonts/cairo": "^0.4.2",
-    "@react-native-async-storage/async-storage": "2.2.0",
+    "@expo-google-fonts/aref-ruqaa": "^0.4.1",
+    "@expo-google-fonts/ibm-plex-sans-arabic": "^0.4.2",
+    "@expo/vector-icons": "^15.1.1",
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/netinfo": "^12.0.1",
     "@supabase/supabase-js": "^2.118.0",
     "expo": "~58.0.16",
-    "expo-constants": "^58.0.12",
-    "expo-font": "^58.0.9",
-    "expo-linking": "^58.0.13",
-    "expo-router": "^58.0.24",
+    "expo-clipboard": "~58.0.3",
+    "expo-constants": "~58.0.12",
+    "expo-font": "~58.0.9",
+    "expo-haptics": "~58.0.7",
+    "expo-linear-gradient": "^58.0.3",
+    "expo-linking": "~58.0.13",
+    "expo-print": "~58.0.7",
+    "expo-router": "~58.0.24",
+    "expo-sharing": "~58.0.19",
+    "expo-speech": "~58.0.3",
+    "expo-splash-screen": "~58.0.10",
     "expo-status-bar": "~58.0.3",
-    "lucide-react-native": "^1.60.0",
+    "expo-system-ui": "~58.0.6",
+    "expo-updates": "~58.0.17",
+    "expo-web-browser": "~58.0.6",
+    "punycode": "^2.3.1",
     "react": "19.3.0",
-    "react-dom": "^19.3.0",
+    "react-dom": "19.3.0",
     "react-native": "0.88.0",
-    "react-native-safe-area-context": "^5.10.1",
-    "react-native-screens": "^4.30.0",
+    "react-native-gesture-handler": "~3.3.0",
+    "react-native-markdown-display": "^7.0.2",
+    "react-native-reanimated": "^4.7.1",
+    "react-native-safe-area-context": "~5.10.1",
+    "react-native-screens": "~4.30.0",
     "react-native-svg": "^15.16.0",
-    "react-native-web": "^0.21.4"
+    "react-native-url-polyfill": "^4.0.0",
+    "react-native-worklets": "^0.13.0",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
     "typescript": "~6.0.3"
   },
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "sync-data": "node scripts/sync-data.mjs",
+    "start": "npm run sync-data && expo start",
+    "android": "npm run sync-data && expo start --android",
+    "typecheck": "tsc --noEmit",
+    "build:apk": "eas build -p android --profile preview"
   },
-  "private": true,
-  "expo": {
-    "install": {
-      "exclude": [
-        "@react-native-async-storage/async-storage"
-      ]
-    }
-  }
+  "private": true
 }

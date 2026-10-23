@@ -9,12 +9,13 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 ```text
 رحلة في السيرة/
+├── app.json
+├── eas.json
 ├── next.config.ts
 ├── package-lock.json
 ├── package.json
 ├── postcss.config.mjs
 ├── PROJECT_STRUCTURE.md
-├── pwa-changes (1).tgz
 ├── README.md
 ├── stations.json
 ├── tsconfig.json
@@ -22,6 +23,83 @@ The map is useful for quickly identifying the layout of the project, understandi
 ├── docs/ [1.13 MB, 3 LOC]
 │   ├── image.png
 │   └── issues.md
+│
+├── mobile/ [1.79 MB, 3655 LOC]
+│   ├── assets/ [1.2 MB, 0 LOC]
+│   │   ├── android-icon-background.png
+│   │   ├── android-icon-foreground.png
+│   │   ├── android-icon-monochrome.png
+│   │   ├── favicon.png
+│   │   ├── icon.png
+│   │   └── splash-icon.png
+│   │
+│   ├── dist/ (empty)
+│   │
+│   ├── scripts/ [986 B, 19 LOC]
+│   │   └── sync-data.mjs
+│   │
+│   ├── src/ [311.45 KB, 3405 LOC]
+│   │   ├── app/ [56.55 KB, 1013 LOC]
+│   │   │   ├── (tabs)/ [31.12 KB, 551 LOC]
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   ├── ai.tsx
+│   │   │   │   ├── explore.tsx
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── profile.tsx
+│   │   │   │
+│   │   │   ├── reader/ [4 KB, 66 LOC]
+│   │   │   │   └── [id].tsx
+│   │   │   │
+│   │   │   ├── station/ [7.87 KB, 155 LOC]
+│   │   │   │   └── [id].tsx
+│   │   │   │
+│   │   │   ├── _layout.tsx
+│   │   │   ├── +not-found.tsx
+│   │   │   ├── auth.tsx
+│   │   │   └── search.tsx
+│   │   │
+│   │   ├── components/ [30.51 KB, 594 LOC]
+│   │   │   ├── chat.tsx
+│   │   │   ├── Hero.tsx
+│   │   │   ├── JourneyFooter.tsx
+│   │   │   ├── RouteMap.tsx
+│   │   │   ├── SceneCard.tsx
+│   │   │   ├── Screen.tsx
+│   │   │   ├── StationCard.tsx
+│   │   │   ├── ToastHost.tsx
+│   │   │   ├── ui.tsx
+│   │   │   └── Wash.tsx
+│   │   │
+│   │   ├── data/ [187.02 KB, 737 LOC]
+│   │   │   ├── arabia-dots.json
+│   │   │   ├── geo.ts
+│   │   │   ├── scenes.ts
+│   │   │   ├── stations.json
+│   │   │   └── types.ts
+│   │   │
+│   │   └── lib/ [37.37 KB, 1061 LOC]
+│   │       ├── api.ts
+│   │       ├── appStore.ts
+│   │       ├── authErrors.ts
+│   │       ├── chatExport.ts
+│   │       ├── chatStore.ts
+│   │       ├── env.ts
+│   │       ├── rtl.ts
+│   │       ├── speech.ts
+│   │       ├── stations.ts
+│   │       ├── supabase.ts
+│   │       ├── supabaseTypes.ts
+│   │       ├── theme.ts
+│   │       ├── toast.ts
+│   │       └── useOnline.ts
+│   │
+│   ├── AGENTS.md
+│   ├── app.json
+│   ├── eas.json
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── README.md
+│   └── tsconfig.json
 │
 ├── public/ [1.22 MB, 25 LOC]
 │   ├── data/ [59.86 KB, 1 LOC]
@@ -133,7 +211,8 @@ The map is useful for quickly identifying the layout of the project, understandi
 | Directory | Lines of Code |
 |-----------|---------------|
 | `src` | 7131 |
-| `(root)` | 3008 |
+| `mobile` | 3655 |
+| `(root)` | 1031 |
 | `scripts` | 839 |
 | `public` | 25 |
 | `docs` | 3 |
@@ -142,41 +221,40 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | File | Lines of Code |
 |------|---------------|
-| `pwa-changes (1).tgz` | 2004 |
+| `mobile/src/data/stations.json` | 690 |
 | `src/data/stations.json` | 690 |
 | `stations.json` | 690 |
 | `src/components/Scene.tsx` | 674 |
 | `src/components/AiChat.tsx` | 625 |
 | `src/components/Header.tsx` | 479 |
 | `src/app/explore/page.tsx` | 441 |
+| `mobile/src/lib/chatStore.ts` | 362 |
 | `src/app/globals.css` | 361 |
 | `src/lib/chatStore.ts` | 360 |
-| `src/app/auth/page.tsx` | 341 |
 
 ### Code Files
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 25 | 4599 | 201.09 KB |
-| .ts | 17 | 1492 | 52.28 KB |
-| .json | 6 | 1485 | 489.61 KB |
-| .mjs | 4 | 100 | 4.19 KB |
+| .tsx | 46 | 6206 | 288.15 KB |
+| .ts | 34 | 2599 | 92.29 KB |
+| .json | 15 | 2368 | 972.05 KB |
+| .md | 5 | 265 | 10.31 KB |
+| .mjs | 5 | 119 | 5.15 KB |
 | .js | 4 | 741 | 26.29 KB |
-| .md | 3 | 199 | 6.39 KB |
 | .webmanifest | 1 | 24 | 944 B |
-| .tgz | 1 | 2004 | 496.25 KB |
 | .css | 1 | 361 | 19.77 KB |
 | .tsbuildinfo | 1 | 1 | 494.55 KB |
-| **Total** | **63** | **11006** | **1.75 MB** |
+| **Total** | **112** | **12684** | **1.86 MB** |
 
 ### Binary / Media Files (Physical Size)
 
 | Extension | Files | Size |
 |-----------|-------|------------|
-| .png | 7 | 2.03 MB |
+| .png | 13 | 3.23 MB |
 | .jpg | 2 | 251.77 KB |
 | .svg | 1 | 19.74 KB |
-| **Total** | **10** | **2.3 MB** |
+| **Total** | **16** | **3.5 MB** |
 
-**Grand Total Files:** 73  
-**Total Repository Size:** 4.05 MB
+**Grand Total Files:** 128  
+**Total Repository Size:** 5.36 MB

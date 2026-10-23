@@ -2,30 +2,51 @@
   "expo": {
     "name": "رحلة في السيرة",
     "slug": "seerah",
+    "scheme": "seerah",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "seerah",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#0b0f1e",
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.belalamrmohamed.seerah"
     },
     "android": {
       "package": "com.belalamrmohamed.seerah",
+      "versionCode": 1,
       "adaptiveIcon": {
+        "backgroundColor": "#073026",
         "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundColor": "#090a0f"
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "supportsRtl": true
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "backgroundColor": "#073026",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "backgroundColor": "#073026"
+          }
+        }
+      ],
+      "expo-web-browser"
     ],
+    "updates": {
+      "enabled": false
+    },
     "extra": {
       "router": {
         "asyncRoutes": {
@@ -33,7 +54,7 @@
         }
       },
       "eas": {
-        "projectId": "826832d7-4001-42d9-9ea0-bdbe59c80aa5"
+        "projectId": "6bec5232-6d63-4a5d-9146-b1ff1340a490"
       }
     }
   }

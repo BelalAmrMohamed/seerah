@@ -1,63 +1,32 @@
-const API_BASE =
-  process.env.EXPO_PUBLIC_API_URL || "https://al-seerah.vercel.app";
+import { API_BASE_URL } from "./env";
 
-export interface ChatHistoryItem {
-  role: "user" | "assistant";
-  content: string;
-}
+export type ChatHistoryItem = { role: "user" | "assistant"; content: string };
 
-export interface SendMessageOptions {
+/**
+ * Calls the website's deployed endpoint (the Gemini key stays on the server).
+ * Same request/response contract as the website's AiChat component.
+ */
+export async function askAi(params: {
   message: string;
   stationContext?: number;
-  history?: ChatHistoryItem[];
-}
-
-export async function sendAiChatMessage({
-  message,
-  stationContext,
-  history,
-}: SendMessageOptions): Promise<{ response?: string; error?: string }> {
+  history: ChatHistoryItem[];
+}): Promise<{ response?: string; error?: string }> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 45000);
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout
-
-    const res = await fetch(`${API_BASE}/api/ai/chat`, {
+    const res = await fetch(`${API_BASE_URL}/api/ai/chat`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message,
-        stationContext,
-        history,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
       signal: controller.signal,
     });
-
-    clearTimeout(timeoutId);
-
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => null);
-      return {
-        error: errorData?.error || `فشل الاتصال بالخادم (${res.status})`,
-      };
-    }
-
-    const data = await res.json();
-    if (data.error) {
-      return { error: data.error };
-    }
-
+    const data = await res.json().catch(() => ({}));
+    if (data?.error) return { error: String(data.error) };
+    if (!res.ok || typeof data?.response !== "string") return { error: "حدث خطأ في الاتصال بمحرك الذكاء. يرجى المحاولة مرة أخرى." };
     return { response: data.response };
-  } catch (err: unknown) {
-    if (err instanceof Error && err.name === "AbortError") {
-      return {
-        error: "استغرقت الاستجابة وقتاً أطول من المتوقع، يرجى المحاولة مرة أخرى.",
-      };
-    }
-    return {
-      error:
-        "تعذر الاتصال بمساعد السيرة. يرجى التأكد من اتصال الإنترنت والمحاولة لاحقاً.",
-    };
+  } catch {
+    return { error: "حدث خطأ في الاتصال بمحرك الذكاء. يرجى المحاولة مرة أخرى." };
+  } finally {
+    clearTimeout(timer);
   }
 }

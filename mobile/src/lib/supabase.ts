@@ -1,17 +1,30 @@
+import "react-native-url-polyfill/auto";
+import { AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "./env";
+import type { Database } from "./supabaseTypes";
 
-const supabaseUrl =
-  process.env.EXPO_PUBLIC_SUPABASE_URL || "https://zvncdynpihzkzaevbhhb.supabase.co";
-const supabaseAnonKey =
-  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2bmNkeW5waWh6a3phZXZiaGhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MTgxOTYsImV4cCI6MjEwNzk5NDE5Nn0.eFSBuq9oJJ2Z-xuhSGZmeYdFnai6bomyyDOH858ZAJI";
+export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: AsyncStorage,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
-  },
+// Uses ONLY the public anon key (protected by Row Level Security on the server).
+export const supabase = createClient<Database>(
+  supabaseConfigured ? SUPABASE_URL : "https://placeholder.supabase.co",
+  supabaseConfigured ? SUPABASE_ANON_KEY : "placeholder-anon-key",
+  {
+    auth: {
+      storage: AsyncStorage,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+      flowType: "pkce",
+    },
+  }
+);
+
+// Refresh tokens only while the app is in the foreground (Supabase RN recommendation).
+AppState.addEventListener("change", (state) => {
+  if (!supabaseConfigured) return;
+  if (state === "active") supabase.auth.startAutoRefresh();
+  else supabase.auth.stopAutoRefresh();
 });

@@ -1,282 +1,90 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Calendar, MapPin, BookOpen, ChevronLeft, Quote, Users } from "lucide-react-native";
-import type { Station } from "../data/types";
-import { ar, arYear, eraOf, eraHex } from "../lib/stations";
-import { colors, fonts } from "../lib/theme";
-import { EraBadge } from "./EraBadge";
+import { Pressable, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { ar, arYear, eraNames, eraOf, type Era } from "@/lib/stations";
+import type { Station } from "@/data/types";
+import { alpha, useEra, useTheme } from "@/lib/theme";
+import { Btn, Card, Txt } from "./ui";
 
-interface StationCardProps {
-  station: Station;
-  onPressDetails: () => void;
-  onPressRead: () => void;
-  isCompleted?: boolean;
-  isBookmarked?: boolean;
-}
-
-export const StationCard: React.FC<StationCardProps> = ({
-  station,
-  onPressDetails,
-  onPressRead,
-  isCompleted,
-  isBookmarked,
-}) => {
-  const era = eraOf(station.category);
-  const eraColor = eraHex[era]?.dark || colors.gold;
-
+/** Explore-grid card (port of the website's /explore card). */
+export function StationGridCard({ s }: { s: Station }) {
+  const { c } = useTheme();
+  const era = eraOf(s.category) as Era;
+  const { era: col } = useEra(era);
   return (
-    <View style={[styles.card, { borderStartColor: eraColor }]}>
-      {/* Top Meta Header */}
-      <View style={styles.topRow}>
-        <View style={styles.metaLeft}>
-          <EraBadge era={era} size="sm" />
-          {isCompleted && (
-            <View style={styles.statusBadge}>
-              <Text style={styles.statusText}>مكتملة ✓</Text>
-            </View>
-          )}
-          {isBookmarked && (
-            <View style={[styles.statusBadge, { backgroundColor: "#3a2d12" }]}>
-              <Text style={[styles.statusText, { color: colors.gold }]}>محفوظة ★</Text>
-            </View>
-          )}
+    <Card era={col} style={{ gap: 10 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <View style={{ width: 36, height: 36, borderRadius: 12, alignItems: "center", justifyContent: "center", backgroundColor: alpha(col, 0.16) }}>
+          <Txt v="display" size={18} color={col} style={{ lineHeight: 26 }}>{ar(s.id)}</Txt>
         </View>
-
-        {/* Station Number */}
-        <View style={[styles.numberPill, { backgroundColor: eraHex[era]?.bg || colors.surfaceRaised }]}>
-          <Text style={[styles.numberText, { color: eraColor }]}>{ar(station.id)}</Text>
+        <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 8, backgroundColor: alpha(col, 0.14) }}>
+          <Txt v="uiMedium" size={11.5} color={col}>{eraNames[era]}</Txt>
+        </View>
+        <View style={{ flex: 1 }} />
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+          <Feather name="calendar" size={12} color={col} />
+          <Txt v="ui" size={12} color={c.muted}>{arYear(s.year)}</Txt>
         </View>
       </View>
-
-      {/* Date & Location */}
-      <View style={styles.dateLocRow}>
-        <View style={styles.metaItem}>
-          <Calendar size={13} color={colors.textMuted} />
-          <Text style={styles.metaText}>
-            {arYear(station.year)} ({ar(station.hijriYear)})
-          </Text>
-        </View>
-        <View style={styles.metaItem}>
-          <MapPin size={13} color={colors.textMuted} />
-          <Text style={styles.metaText}>{station.location}</Text>
-        </View>
-      </View>
-
-      {/* Title & Subtitle */}
-      <TouchableOpacity activeOpacity={0.8} onPress={onPressDetails}>
-        <Text style={styles.title}>{station.title}</Text>
-        <Text style={styles.subtitle}>{station.subtitle}</Text>
-      </TouchableOpacity>
-
-      {/* Quote Preview */}
-      <View style={[styles.quoteBox, { borderColor: eraColor + "30" }]}>
-        <Quote size={14} color={eraColor} style={styles.quoteIcon} />
-        <Text style={styles.quoteText} numberOfLines={2}>
-          «{station.quote}»
-        </Text>
-      </View>
-
-      {/* Key figures chips */}
-      {station.keyFigures && station.keyFigures.length > 0 && (
-        <View style={styles.figuresRow}>
-          <Users size={12} color={colors.textMuted} />
-          <View style={styles.chipsContainer}>
-            {station.keyFigures.slice(0, 3).map((fig, idx) => (
-              <View key={idx} style={styles.figureChip}>
-                <Text style={styles.figureChipText}>{fig}</Text>
-              </View>
-            ))}
-            {station.keyFigures.length > 3 && (
-              <Text style={styles.moreFigures}>+{ar(station.keyFigures.length - 3)}</Text>
-            )}
-          </View>
+      <Pressable onPress={() => router.push({ pathname: "/station/[id]", params: { id: String(s.id) } })}>
+        <Txt v="display" size={22} numberOfLines={2}>{s.title}</Txt>
+      </Pressable>
+      <Txt v="ui" size={13} color={c.muted} numberOfLines={2}>{s.subtitle}</Txt>
+      {!!s.quote && (
+        <View style={{ borderWidth: 1, borderColor: c.line, backgroundColor: c.solid, borderRadius: 14, padding: 12 }}>
+          <Txt v="text" size={15} numberOfLines={3}>«{s.quote}»</Txt>
         </View>
       )}
-
-      {/* Actions */}
-      <View style={styles.actionsRow}>
-        <TouchableOpacity
-          style={[styles.primaryBtn, { backgroundColor: eraHex[era]?.bg || colors.surfaceRaised, borderColor: eraColor }]}
-          onPress={onPressRead}
-          activeOpacity={0.75}
-        >
-          <BookOpen size={15} color={eraColor} />
-          <Text style={[styles.primaryBtnText, { color: eraColor }]}>اقرأ نص ابن هشام</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.detailsBtn}
-          onPress={onPressDetails}
-          activeOpacity={0.75}
-        >
-          <Text style={styles.detailsBtnText}>التفاصيل الكاملة</Text>
-          <ChevronLeft size={16} color={colors.textSecondary} />
-        </TouchableOpacity>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+        <Feather name="map-pin" size={13} color={col} />
+        <Txt v="ui" size={12} color={c.muted} numberOfLines={1} style={{ flex: 1 }}>{s.location}</Txt>
       </View>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 6 }}>
+        <Feather name="users" size={12} color={c.muted} />
+        {s.keyFigures.slice(0, 3).map((f) => (
+          <View key={f} style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 7, backgroundColor: alpha(col, 0.1) }}>
+            <Txt v="ui" size={11.5} color={col}>{f}</Txt>
+          </View>
+        ))}
+        {s.keyFigures.length > 3 && <Txt v="ui" size={11} color={c.muted}>+{ar(s.keyFigures.length - 3)}</Txt>}
+      </View>
+      <View style={{ flexDirection: "row", gap: 10, marginTop: 4 }}>
+        <Btn small label="في الرحلة" icon="compass" color={col} style={{ flex: 1 }} onPress={() => router.navigate({ pathname: "/", params: { s: String(s.id) } })} />
+        <Btn small primary label="التفاصيل" icon="book-open" color={col} style={{ flex: 1 }} onPress={() => router.push({ pathname: "/station/[id]", params: { id: String(s.id) } })} />
+      </View>
+    </Card>
+  );
+}
+
+/** Explore timeline row (port of the website's timeline view). */
+export function StationTimelineRow({ s, last }: { s: Station; last?: boolean }) {
+  const { c } = useTheme();
+  const era = eraOf(s.category) as Era;
+  const { era: col } = useEra(era);
+  return (
+    <View style={{ flexDirection: "row", gap: 12 }}>
+      <View style={{ alignItems: "center", width: 28 }}>
+        <View style={{ width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: col }}>
+          <Txt v="display" size={13} color={c.onAccent} style={{ lineHeight: 20 }}>{ar(s.id)}</Txt>
+        </View>
+        {!last && <View style={{ flex: 1, width: 2, backgroundColor: alpha(col, 0.3), marginTop: 4 }} />}
+      </View>
+      <Card era={col} style={{ flex: 1, marginBottom: 14, gap: 6, padding: 14 }}>
+        <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
+          <Txt v="uiMedium" size={11.5} color={col}>{eraNames[era]}</Txt>
+          <Txt v="ui" size={11.5} color={c.muted}>{arYear(s.year)}</Txt>
+          <Txt v="ui" size={11.5} color={c.muted}>{s.location}</Txt>
+        </View>
+        <Pressable onPress={() => router.push({ pathname: "/station/[id]", params: { id: String(s.id) } })}>
+          <Txt v="display" size={20}>{s.title}</Txt>
+        </Pressable>
+        <Txt v="ui" size={13} color={c.muted} numberOfLines={1}>{s.subtitle}</Txt>
+        <View style={{ flexDirection: "row", gap: 8, marginTop: 4 }}>
+          <Btn small label="في الرحلة" color={col} onPress={() => router.navigate({ pathname: "/", params: { s: String(s.id) } })} />
+          <Btn small primary label="التفاصيل" color={col} onPress={() => router.push({ pathname: "/station/[id]", params: { id: String(s.id) } })} />
+        </View>
+      </Card>
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderStartWidth: 4,
-  },
-  topRow: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  metaLeft: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 8,
-  },
-  numberPill: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  numberText: {
-    fontFamily: fonts.bold,
-    fontSize: 16,
-  },
-  statusBadge: {
-    backgroundColor: "#133124",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-  },
-  statusText: {
-    color: colors.emerald,
-    fontFamily: fonts.medium,
-    fontSize: 11,
-  },
-  dateLocRow: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 16,
-    marginBottom: 10,
-  },
-  metaItem: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 4,
-  },
-  metaText: {
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    fontSize: 12,
-  },
-  title: {
-    color: colors.text,
-    fontFamily: fonts.bold,
-    fontSize: 18,
-    writingDirection: "rtl",
-    textAlign: "right",
-    marginBottom: 4,
-  },
-  subtitle: {
-    color: colors.textSecondary,
-    fontFamily: fonts.regular,
-    fontSize: 13,
-    writingDirection: "rtl",
-    textAlign: "right",
-    lineHeight: 20,
-    marginBottom: 12,
-  },
-  quoteBox: {
-    flexDirection: "row-reverse",
-    alignItems: "flex-start",
-    gap: 8,
-    backgroundColor: colors.surfaceRaised,
-    padding: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    marginBottom: 12,
-  },
-  quoteIcon: {
-    marginTop: 2,
-  },
-  quoteText: {
-    flex: 1,
-    fontFamily: fonts.quran,
-    color: colors.goldLight,
-    fontSize: 14,
-    writingDirection: "rtl",
-    textAlign: "right",
-    lineHeight: 22,
-  },
-  figuresRow: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 14,
-  },
-  chipsContainer: {
-    flexDirection: "row-reverse",
-    flexWrap: "wrap",
-    gap: 6,
-    alignItems: "center",
-  },
-  figureChip: {
-    backgroundColor: colors.surfaceRaised,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  figureChipText: {
-    color: colors.textSecondary,
-    fontFamily: fonts.regular,
-    fontSize: 11,
-  },
-  moreFigures: {
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    fontSize: 11,
-  },
-  actionsRow: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: 12,
-    marginTop: 4,
-  },
-  primaryBtn: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  primaryBtnText: {
-    fontFamily: fonts.medium,
-    fontSize: 13,
-  },
-  detailsBtn: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  detailsBtnText: {
-    color: colors.textSecondary,
-    fontFamily: fonts.medium,
-    fontSize: 13,
-  },
-});
+}
