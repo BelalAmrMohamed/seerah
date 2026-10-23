@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && node scripts/gen-sw.mjs",
-    "build:app": "cd mobile && npx eas-cli build -p android --profile preview && cd ..",
+    "build:apk": "cd mobile && npx eas-cli build -p android --profile preview && cd ..",
     "start": "next start",
     "dots": "node scripts/build-dots.mjs",
     "map": "node scripts/map.js",

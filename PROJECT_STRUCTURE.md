@@ -24,7 +24,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── image.png
 │   └── issues.md
 │
-├── mobile/ [1.79 MB, 3655 LOC]
+├── mobile/ [1.79 MB, 3656 LOC]
 │   ├── assets/ [1.2 MB, 0 LOC]
 │   │   ├── android-icon-background.png
 │   │   ├── android-icon-foreground.png
@@ -211,8 +211,8 @@ The map is useful for quickly identifying the layout of the project, understandi
 | Directory | Lines of Code |
 |-----------|---------------|
 | `src` | 7131 |
-| `mobile` | 3655 |
-| `(root)` | 1031 |
+| `mobile` | 3656 |
+| `(root)` | 1109 |
 | `scripts` | 839 |
 | `public` | 25 |
 | `docs` | 3 |
@@ -238,14 +238,14 @@ The map is useful for quickly identifying the layout of the project, understandi
 |-----------|-------|---------------|------------|
 | .tsx | 46 | 6206 | 288.15 KB |
 | .ts | 34 | 2599 | 92.29 KB |
-| .json | 15 | 2368 | 972.05 KB |
-| .md | 5 | 265 | 10.31 KB |
+| .json | 15 | 2369 | 972.11 KB |
+| .md | 5 | 343 | 13.04 KB |
 | .mjs | 5 | 119 | 5.15 KB |
 | .js | 4 | 741 | 26.29 KB |
 | .webmanifest | 1 | 24 | 944 B |
 | .css | 1 | 361 | 19.77 KB |
 | .tsbuildinfo | 1 | 1 | 494.55 KB |
-| **Total** | **112** | **12684** | **1.86 MB** |
+| **Total** | **112** | **12763** | **1.87 MB** |
 
 ### Binary / Media Files (Physical Size)
 
