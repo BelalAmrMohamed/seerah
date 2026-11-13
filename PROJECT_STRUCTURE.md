@@ -214,7 +214,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 |-----------|---------------|
 | `src` | 8571 |
 | `mobile` | 3656 |
-| `(root)` | 1120 |
+| `(root)` | 1122 |
 | `scripts` | 839 |
 | `public` | 25 |
 | `docs` | 3 |
@@ -241,13 +241,13 @@ The map is useful for quickly identifying the layout of the project, understandi
 | .tsx | 47 | 7433 | 337.71 KB |
 | .ts | 34 | 2808 | 113.44 KB |
 | .json | 15 | 2370 | 979.92 KB |
-| .md | 6 | 353 | 14.02 KB |
+| .md | 6 | 355 | 13.85 KB |
 | .mjs | 5 | 119 | 5.17 KB |
 | .js | 4 | 741 | 26.29 KB |
 | .webmanifest | 1 | 24 | 944 B |
 | .css | 1 | 365 | 20.02 KB |
 | .tsbuildinfo | 1 | 1 | 494.55 KB |
-| **Total** | **114** | **14214** | **1.95 MB** |
+| **Total** | **114** | **14216** | **1.95 MB** |
 
 ### Binary / Media Files (Physical Size)
 
