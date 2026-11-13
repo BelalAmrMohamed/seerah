@@ -9,6 +9,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 ```text
 رحلة في السيرة/
+├── AGENTS.md
 ├── app.json
 ├── eas.json
 ├── next.config.ts
@@ -24,7 +25,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── image.png
 │   └── issues.md
 │
-├── mobile/ [1.79 MB, 3656 LOC]
+├── mobile/ [1.8 MB, 3656 LOC]
 │   ├── assets/ [1.2 MB, 0 LOC]
 │   │   ├── android-icon-background.png
 │   │   ├── android-icon-foreground.png
@@ -35,22 +36,22 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   │
 │   ├── dist/ (empty)
 │   │
-│   ├── scripts/ [986 B, 19 LOC]
+│   ├── scripts/ [1004 B, 19 LOC]
 │   │   └── sync-data.mjs
 │   │
-│   ├── src/ [311.45 KB, 3405 LOC]
-│   │   ├── app/ [56.55 KB, 1013 LOC]
-│   │   │   ├── (tabs)/ [31.12 KB, 551 LOC]
+│   ├── src/ [313.9 KB, 3405 LOC]
+│   │   ├── app/ [57.53 KB, 1013 LOC]
+│   │   │   ├── (tabs)/ [31.66 KB, 551 LOC]
 │   │   │   │   ├── _layout.tsx
 │   │   │   │   ├── ai.tsx
 │   │   │   │   ├── explore.tsx
 │   │   │   │   ├── index.tsx
 │   │   │   │   └── profile.tsx
 │   │   │   │
-│   │   │   ├── reader/ [4 KB, 66 LOC]
+│   │   │   ├── reader/ [4.06 KB, 66 LOC]
 │   │   │   │   └── [id].tsx
 │   │   │   │
-│   │   │   ├── station/ [7.87 KB, 155 LOC]
+│   │   │   ├── station/ [8.02 KB, 155 LOC]
 │   │   │   │   └── [id].tsx
 │   │   │   │
 │   │   │   ├── _layout.tsx
@@ -58,7 +59,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   │   │   ├── auth.tsx
 │   │   │   └── search.tsx
 │   │   │
-│   │   ├── components/ [30.51 KB, 594 LOC]
+│   │   ├── components/ [31.08 KB, 594 LOC]
 │   │   │   ├── chat.tsx
 │   │   │   ├── Hero.tsx
 │   │   │   ├── JourneyFooter.tsx
@@ -70,14 +71,14 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   │   │   ├── ui.tsx
 │   │   │   └── Wash.tsx
 │   │   │
-│   │   ├── data/ [187.02 KB, 737 LOC]
+│   │   ├── data/ [187.03 KB, 737 LOC]
 │   │   │   ├── arabia-dots.json
 │   │   │   ├── geo.ts
 │   │   │   ├── scenes.ts
 │   │   │   ├── stations.json
 │   │   │   └── types.ts
 │   │   │
-│   │   └── lib/ [37.37 KB, 1061 LOC]
+│   │   └── lib/ [38.27 KB, 1061 LOC]
 │   │       ├── api.ts
 │   │       ├── appStore.ts
 │   │       ├── authErrors.ts
@@ -127,8 +128,8 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [397.45 KB, 7131 LOC]
-    ├── app/ [82.69 KB, 1810 LOC]
+└── src/ [465.96 KB, 8571 LOC]
+    ├── app/ [84.31 KB, 1842 LOC]
     │   ├── api/ [3.5 KB, 85 LOC]
     │   │   └── ai/ [3.5 KB, 85 LOC]
     │   │       └── chat/ [3.5 KB, 85 LOC]
@@ -140,7 +141,7 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   │   │
     │   │   └── page.tsx
     │   │
-    │   ├── explore/ [20.54 KB, 441 LOC]
+    │   ├── explore/ [21.82 KB, 467 LOC]
     │   │   └── page.tsx
     │   │
     │   ├── profile/ [5.96 KB, 151 LOC]
@@ -154,13 +155,13 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── layout.tsx
     │   └── page.tsx
     │
-    ├── components/ [141.83 KB, 3247 LOC]
+    ├── components/ [188.47 KB, 4446 LOC]
     │   ├── chat/ [26.79 KB, 661 LOC]
     │   │   ├── ChatHistoryDrawer.tsx
     │   │   ├── ChatMessageItem.tsx
     │   │   └── MarkdownContent.tsx
     │   │
-    │   ├── three/ [6.66 KB, 127 LOC]
+    │   ├── three/ [14.97 KB, 381 LOC]
     │   │   └── Stage.tsx
     │   │
     │   ├── AiChat.tsx
@@ -175,18 +176,19 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── ReadingDrawer.tsx
     │   ├── Scene.tsx
     │   ├── SearchPalette.tsx
+    │   ├── SeerahAtlasModal.tsx
     │   ├── StageLoader.tsx
     │   └── TimelineRail.tsx
     │
     ├── config/ [989 B, 23 LOC]
     │   └── scenes.ts
     │
-    ├── data/ [126.16 KB, 713 LOC]
+    ├── data/ [146.02 KB, 911 LOC]
     │   ├── geo.ts
     │   ├── stations.json
     │   └── types.ts
     │
-    ├── lib/ [45.27 KB, 1318 LOC]
+    ├── lib/ [45.65 KB, 1329 LOC]
     │   ├── supabase/ [4.93 KB, 197 LOC]
     │   │   ├── client.ts
     │   │   ├── middleware.ts
@@ -210,9 +212,9 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Directory | Lines of Code |
 |-----------|---------------|
-| `src` | 7131 |
+| `src` | 8571 |
 | `mobile` | 3656 |
-| `(root)` | 1109 |
+| `(root)` | 1120 |
 | `scripts` | 839 |
 | `public` | 25 |
 | `docs` | 3 |
@@ -221,31 +223,31 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | File | Lines of Code |
 |------|---------------|
+| `src/components/Scene.tsx` | 805 |
+| `src/components/SeerahAtlasModal.tsx` | 786 |
 | `mobile/src/data/stations.json` | 690 |
 | `src/data/stations.json` | 690 |
 | `stations.json` | 690 |
-| `src/components/Scene.tsx` | 674 |
 | `src/components/AiChat.tsx` | 625 |
-| `src/components/Header.tsx` | 479 |
-| `src/app/explore/page.tsx` | 441 |
-| `mobile/src/lib/chatStore.ts` | 362 |
-| `src/app/globals.css` | 361 |
-| `src/lib/chatStore.ts` | 360 |
+| `src/components/Header.tsx` | 507 |
+| `src/app/explore/page.tsx` | 467 |
+| `src/components/three/Stage.tsx` | 381 |
+| `src/app/globals.css` | 365 |
 
 ### Code Files
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 46 | 6206 | 288.15 KB |
-| .ts | 34 | 2599 | 92.29 KB |
-| .json | 15 | 2369 | 972.11 KB |
-| .md | 5 | 343 | 13.04 KB |
-| .mjs | 5 | 119 | 5.15 KB |
+| .tsx | 47 | 7433 | 337.71 KB |
+| .ts | 34 | 2808 | 113.44 KB |
+| .json | 15 | 2370 | 979.92 KB |
+| .md | 6 | 353 | 14.02 KB |
+| .mjs | 5 | 119 | 5.17 KB |
 | .js | 4 | 741 | 26.29 KB |
 | .webmanifest | 1 | 24 | 944 B |
-| .css | 1 | 361 | 19.77 KB |
+| .css | 1 | 365 | 20.02 KB |
 | .tsbuildinfo | 1 | 1 | 494.55 KB |
-| **Total** | **112** | **12763** | **1.87 MB** |
+| **Total** | **114** | **14214** | **1.95 MB** |
 
 ### Binary / Media Files (Physical Size)
 
@@ -256,5 +258,5 @@ The map is useful for quickly identifying the layout of the project, understandi
 | .svg | 1 | 19.74 KB |
 | **Total** | **16** | **3.5 MB** |
 
-**Grand Total Files:** 128  
-**Total Repository Size:** 5.36 MB
+**Grand Total Files:** 130  
+**Total Repository Size:** 5.44 MB
