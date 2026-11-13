@@ -29,6 +29,7 @@ export default function Header() {
   const user = useAppStore((s) => s.user);
   const setUser = useAppStore((s) => s.setUser);
   const toggleAiChat = useAppStore((s) => s.toggleAiChat);
+  const openAtlasModal = useAppStore((s) => s.openAtlasModal);
 
   useEffect(() => setMounted(true), []);
   useEffect(() => setMenuOpen(false), [pathname]);
@@ -129,6 +130,16 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
+
+              <button
+                type="button"
+                onClick={() => openAtlasModal()}
+                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-ui text-sm transition-all hover:text-[color:var(--accent)] hover:bg-[color:var(--panel)] cursor-pointer"
+                style={{ color: "var(--muted)" }}
+              >
+                <Compass size={15} />
+                الخريطة التفاعلية
+              </button>
             </nav>
           </div>
 
@@ -360,6 +371,23 @@ export default function Header() {
                   </div>
                   <span className="text-xs text-[color:var(--muted)]">فلاتر وبحث</span>
                 </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    openAtlasModal();
+                  }}
+                  className="flex items-center justify-between rounded-xl px-4 py-3 text-base text-start transition-all hover:bg-[color:var(--panel)] cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <Compass size={18} style={{ color: "var(--accent)" }} />
+                    <span>الخريطة التفاعلية (3D Atlas)</span>
+                  </div>
+                  <span className="rounded-full px-2 py-0.5 text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 font-semibold">
+                    أطلس حي
+                  </span>
+                </button>
 
                 <button
                   type="button"

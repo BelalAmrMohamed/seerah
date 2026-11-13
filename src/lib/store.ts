@@ -30,6 +30,12 @@ interface AppState {
   toggleAiChat: () => void;
   setAiChatOpen: (v: boolean) => void;
 
+  // 3D Seerah Atlas Modal
+  atlasModalOpen: boolean;
+  atlasStationId: number | null;
+  openAtlasModal: (stationId?: number) => void;
+  closeAtlasModal: () => void;
+
   // User (set by AuthProvider after session check)
   user: { id: string; email: string; name?: string; avatarUrl?: string } | null;
   setUser: (u: AppState["user"]) => void;
@@ -46,6 +52,11 @@ export const useAppStore = create<AppState>((set) => ({
   aiChatOpen: false,
   toggleAiChat: () => set((s) => ({ aiChatOpen: !s.aiChatOpen })),
   setAiChatOpen: (v) => set({ aiChatOpen: v }),
+
+  atlasModalOpen: false,
+  atlasStationId: null,
+  openAtlasModal: (stationId) => set({ atlasModalOpen: true, atlasStationId: stationId ?? null }),
+  closeAtlasModal: () => set({ atlasModalOpen: false, atlasStationId: null }),
 
   user: null,
   setUser: (u) => set({ user: u }),

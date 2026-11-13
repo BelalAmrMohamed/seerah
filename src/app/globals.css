@@ -263,10 +263,14 @@ html.lenis, html.lenis body { height: auto; }
 
 /* ================================================================ */
 /*  TIMELINE RAIL                                                    */
-/* ================================================================ */
-.hud-dot { width: .7rem; height: .7rem; border-radius: 50%; border: 1.5px solid var(--era); transition: background var(--dur-med), box-shadow var(--dur-med); }
-[data-on] > .hud-dot { background: var(--era); box-shadow: 0 0 14px var(--era); }
+.hud-dot { width: .75rem; height: .75rem; border-radius: 50%; border: 1.5px solid var(--era); transition: background var(--dur-med), box-shadow var(--dur-med), transform var(--dur-med); }
+[data-on] > .hud-dot { background: var(--era); box-shadow: 0 0 16px var(--era), 0 0 4px #fff; transform: scale(1.2); }
 [data-on] { color: var(--ink); }
+li[data-wp][data-on] {
+  border-color: color-mix(in srgb, var(--era) 45%, transparent) !important;
+  background: color-mix(in srgb, var(--era) 14%, transparent) !important;
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--era) 12%, transparent);
+}
 .tick { height: 2px; width: 10px; background: var(--line); transition: width var(--dur-med) var(--ease-out-expo), background var(--dur-med); border-radius: 2px; }
 .tick[data-current="true"] { width: 26px; background: var(--era); }
 .tick:hover { width: 22px; background: var(--ink); }

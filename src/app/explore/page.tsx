@@ -1,8 +1,9 @@
 "use client";
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useAppStore } from "@/lib/store";
 import { stations, ar, arYear, eraOf, eraNames, type Era } from "@/lib/stations";
-import { Search, Filter, BookOpen, MapPin, Calendar, Users, ArrowUpDown, LayoutGrid, List, Sparkles, ExternalLink, X } from "lucide-react";
+import { Search, Filter, BookOpen, MapPin, Calendar, Users, ArrowUpDown, LayoutGrid, List, Sparkles, ExternalLink, X, Compass } from "lucide-react";
 
 type SortOption = "chrono-asc" | "chrono-desc" | "title";
 type ViewMode = "grid" | "timeline";
@@ -18,6 +19,7 @@ const ERAS: { key: Era | "all"; label: string; count: number }[] = [
 ];
 
 export default function ExplorePage() {
+  const openAtlasModal = useAppStore((s) => s.openAtlasModal);
   const [search, setSearch] = useState("");
   const [selectedEra, setSelectedEra] = useState<Era | "all">("all");
   const [sortBy, setSortBy] = useState<SortOption>("chrono-asc");
@@ -79,6 +81,21 @@ export default function ExplorePage() {
             <span>٦ حِقَب كبرى</span>
             <span>·</span>
             <span>من عام الفيل ٥٧١ م حتى حجة الوداع ووفاته ﷺ ١١ هـ</span>
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-3">
+            <button
+              type="button"
+              onClick={() => openAtlasModal()}
+              className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-ui font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg cursor-pointer"
+              style={{
+                background: "var(--era-grad, linear-gradient(135deg, var(--era), var(--accent)))",
+                color: "var(--solid)",
+              }}
+            >
+              <Compass size={16} />
+              استكشف المحطات على الخريطة ثلاثية الأبعاد (3D Atlas)
+            </button>
           </div>
         </div>
 
@@ -340,6 +357,15 @@ export default function ExplorePage() {
                         <BookOpen size={13} />
                         <span>في الرحلة</span>
                       </Link>
+
+                      <button
+                        type="button"
+                        onClick={() => openAtlasModal(s.id)}
+                        className="btn !py-1.5 !px-2.5 !text-xs font-ui justify-center"
+                        title="استعرض على الخريطة ثلاثية الأبعاد"
+                      >
+                        <Compass size={14} style={{ color: "var(--era)" }} />
+                      </button>
 
                       <Link
                         href={`/station/${s.id}`}

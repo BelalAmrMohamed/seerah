@@ -6,7 +6,9 @@ import { sceneEffect, variant, type Effect } from "@/config/scenes";
 import { mountActive, mountEffect } from "@/lib/effects";
 import { reduced } from "@/lib/scroll";
 import { ar, arYear, cite, eraOf, sentences } from "@/lib/stations";
-import { geo } from "@/data/geo";
+import { geo, geoMeta } from "@/data/geo";
+import { useAppStore } from "@/lib/store";
+import { Compass, Navigation, Clock, Mountain, Maximize2, BookOpen } from "lucide-react";
 import Magnetic from "./Magnetic";
 
 const PinIcon = () => (
@@ -490,6 +492,7 @@ const DoorPanelRight = () => (
 
 
 export default function Scene({ s }: { s: Station }) {
+  const openAtlas = useAppStore((state) => state.openAtlasModal);
   const ref = useRef<HTMLElement>(null);
   const effect: Effect = sceneEffect[s.id];
   const v = variant(s.id);
@@ -532,18 +535,146 @@ export default function Scene({ s }: { s: Station }) {
             </div>
           </div>
         </>); break;
-    case "route":
+    case "route": {
+      const meta = geoMeta[s.id];
       top = (
         <div data-pin className="pin !items-end md:!items-center">
           <div className="wrap grid">
-            <div className="grid max-w-md gap-5 rounded-3xl border p-6 md:p-8" style={{ background: "var(--panel)", backdropFilter: "blur(14px)", borderColor: "var(--line)" }}>
+            <div
+              className="grid max-w-lg gap-4 rounded-3xl border p-5 sm:p-7 shadow-2xl transition-all"
+              style={{
+                background: "color-mix(in srgb, var(--panel) 88%, transparent)",
+                backdropFilter: "blur(24px) saturate(1.4)",
+                borderColor: "color-mix(in srgb, var(--era) 40%, var(--line))",
+                boxShadow: "0 24px 60px rgba(0, 0, 0, 0.4)",
+              }}
+            >
+              {/* Header badge & telemetry tag */}
+              <div className="flex items-center justify-between gap-3">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-ui font-semibold border"
+                  style={{
+                    color: "var(--era)",
+                    borderColor: "color-mix(in srgb, var(--era) 30%, transparent)",
+                    background: "color-mix(in srgb, var(--era) 12%, transparent)",
+                  }}
+                >
+                  <Compass size={13} className="animate-spin" style={{ animationDuration: "12s" }} />
+                  مسار تاريخي ثلاثي الأبعاد
+                </span>
+
+                {meta?.coordLabel && (
+                  <span className="font-mono text-[11px] px-2 py-0.5 rounded-md" style={{ color: "var(--muted)", background: "var(--line)" }}>
+                    {meta.coordLabel}
+                  </span>
+                )}
+              </div>
+
               <Intro s={s} compact noSub />
-              <ul className="grid gap-3 ps-1" aria-label="محطات الطريق">
-                {pts.map((p) => <li key={p.n} data-wp className="flex items-center gap-3" style={{ color: "var(--muted)" }}><span className="hud-dot" />{p.n}</li>)}
-              </ul>
+
+              {/* Telemetry Strip: Distance, Duration, Terrain */}
+              {meta && (meta.distance || meta.terrain) && (
+                <div
+                  className="grid grid-cols-2 gap-2 rounded-2xl border p-3 text-xs font-ui"
+                  style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--panel) 60%, transparent)" }}
+                >
+                  {meta.distance && (
+                    <div className="flex flex-col gap-0.5">
+                      <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--muted)" }}>
+                        <Navigation size={12} style={{ color: "var(--era)" }} />
+                        المسافة التقديرية
+                      </span>
+                      <span className="font-bold text-sm" style={{ color: "var(--ink)" }}>{meta.distance}</span>
+                    </div>
+                  )}
+                  {meta.duration && (
+                    <div className="flex flex-col gap-0.5">
+                      <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--muted)" }}>
+                        <Clock size={12} style={{ color: "var(--era)" }} />
+                        مدة السير التاريخية
+                      </span>
+                      <span className="font-bold text-sm" style={{ color: "var(--ink)" }}>{meta.duration}</span>
+                    </div>
+                  )}
+                  {meta.terrain && (
+                    <div className="col-span-2 pt-1.5 border-t flex flex-col gap-0.5" style={{ borderColor: "var(--line)" }}>
+                      <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--muted)" }}>
+                        <Mountain size={12} style={{ color: "var(--era)" }} />
+                        طبيعة الدرب والتضاريس
+                      </span>
+                      <span className="leading-relaxed" style={{ color: "var(--muted)" }}>{meta.terrain}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Waypoints List with Interactive Glow */}
+              <div className="grid gap-2">
+                <span className="text-[11px] font-ui" style={{ color: "var(--muted)" }}>
+                  محطات الركب على الخريطة (تتألق تباعاً مع التمرير):
+                </span>
+                <ul className="grid gap-2 ps-1 max-h-48 overflow-y-auto pe-1 scrollbar-thin" aria-label="محطات الطريق">
+                  {pts.map((p, idx) => (
+                    <li
+                      key={p.n}
+                      data-wp
+                      className="group flex items-start gap-3 rounded-xl border p-2 transition-all"
+                      style={{
+                        borderColor: "var(--line)",
+                        background: "color-mix(in srgb, var(--panel) 40%, transparent)",
+                        color: "var(--muted)",
+                      }}
+                    >
+                      <span className="hud-dot mt-1 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-bold text-sm" style={{ color: "var(--ink)" }}>{p.n}</span>
+                          <span className="text-[10px] font-ui px-1.5 py-0.5 rounded" style={{ background: "var(--line)" }}>
+                            {ar(idx + 1)}
+                          </span>
+                        </div>
+                        {p.desc && (
+                          <p className="text-xs mt-0.5 leading-snug line-clamp-1" style={{ color: "var(--muted)" }}>
+                            {p.desc}
+                          </p>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Action Buttons: 3D Atlas Full Screen + Read Chapter */}
+              <div className="flex items-center gap-2 pt-2 border-t" style={{ borderColor: "var(--line)" }}>
+                <button
+                  type="button"
+                  onClick={() => openAtlas(s.id)}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 px-3 text-xs font-ui font-semibold transition-all shadow-md hover:scale-[1.02] active:scale-[0.98]"
+                  style={{
+                    background: "var(--era)",
+                    color: "var(--solid)",
+                  }}
+                >
+                  <Maximize2 size={14} />
+                  استكشاف الخريطة ثلاثية الأبعاد
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("rihla:read", { detail: s.id }))}
+                  className="flex items-center justify-center rounded-xl p-2.5 border transition-all hover:bg-[color:var(--panel)]"
+                  style={{ borderColor: "var(--line)", color: "var(--muted)" }}
+                  title="اقرأ نص ابن هشام"
+                >
+                  <BookOpen size={16} />
+                </button>
+              </div>
             </div>
           </div>
-        </div>); break;
+        </div>
+      );
+      break;
+    }
     case "curtain":
       top = (
         <div data-pin className="pin">

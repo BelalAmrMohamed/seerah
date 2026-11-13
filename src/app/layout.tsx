@@ -18,6 +18,7 @@ import SearchPalette from "@/components/SearchPalette";
 import CursorGlow from "@/components/CursorGlow";
 import Loader from "@/components/Loader";
 import AiChat from "@/components/AiChat";
+import SeerahAtlasModal from "@/components/SeerahAtlasModal";
 import InstallPWA from "@/components/InstallPWA";
 import { Toaster } from "sonner";
 
@@ -126,6 +127,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <div className="relative z-10">{children}</div>
           <ReadingDrawer />
+          <SeerahAtlasModal />
           <SearchPalette />
           <AiChat />
           <InstallPWA />
