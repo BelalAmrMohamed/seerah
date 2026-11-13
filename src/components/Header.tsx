@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "motion/react";
 import { useAppStore } from "@/lib/store";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { getLenis } from "@/lib/scroll";
 import { triggerPwaInstall } from "@/components/InstallPWA";
 import { toast } from "sonner";
@@ -60,6 +60,11 @@ export default function Header() {
 
   // Sync auth on mount & listen to state changes
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setUser(null);
+      return;
+    }
+
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user: u } }) => {
       if (u) {

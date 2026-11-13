@@ -128,8 +128,8 @@ The map is useful for quickly identifying the layout of the project, understandi
 │   ├── map.js
 │   └── release.js
 │
-└── src/ [465.96 KB, 8571 LOC]
-    ├── app/ [84.31 KB, 1842 LOC]
+└── src/ [469.45 KB, 8596 LOC]
+    ├── app/ [84.77 KB, 1842 LOC]
     │   ├── api/ [3.5 KB, 85 LOC]
     │   │   └── ai/ [3.5 KB, 85 LOC]
     │   │       └── chat/ [3.5 KB, 85 LOC]
@@ -141,7 +141,7 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   │   │
     │   │   └── page.tsx
     │   │
-    │   ├── explore/ [21.82 KB, 467 LOC]
+    │   ├── explore/ [22.28 KB, 467 LOC]
     │   │   └── page.tsx
     │   │
     │   ├── profile/ [5.96 KB, 151 LOC]
@@ -155,13 +155,13 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── layout.tsx
     │   └── page.tsx
     │
-    ├── components/ [188.47 KB, 4446 LOC]
+    ├── components/ [190.59 KB, 4456 LOC]
     │   ├── chat/ [26.79 KB, 661 LOC]
     │   │   ├── ChatHistoryDrawer.tsx
     │   │   ├── ChatMessageItem.tsx
     │   │   └── MarkdownContent.tsx
     │   │
-    │   ├── three/ [14.97 KB, 381 LOC]
+    │   ├── three/ [15.34 KB, 381 LOC]
     │   │   └── Stage.tsx
     │   │
     │   ├── AiChat.tsx
@@ -183,13 +183,13 @@ The map is useful for quickly identifying the layout of the project, understandi
     ├── config/ [989 B, 23 LOC]
     │   └── scenes.ts
     │
-    ├── data/ [146.02 KB, 911 LOC]
+    ├── data/ [146.23 KB, 911 LOC]
     │   ├── geo.ts
     │   ├── stations.json
     │   └── types.ts
     │
-    ├── lib/ [45.65 KB, 1329 LOC]
-    │   ├── supabase/ [4.93 KB, 197 LOC]
+    ├── lib/ [46.38 KB, 1344 LOC]
+    │   ├── supabase/ [5.57 KB, 212 LOC]
     │   │   ├── client.ts
     │   │   ├── middleware.ts
     │   │   ├── server.ts
@@ -203,7 +203,7 @@ The map is useful for quickly identifying the layout of the project, understandi
     │   ├── stations.ts
     │   └── store.ts
     │
-    └── middleware.ts
+    └── proxy.ts
 ```
 
 ## Codebase Summary
@@ -212,7 +212,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Directory | Lines of Code |
 |-----------|---------------|
-| `src` | 8571 |
+| `src` | 8596 |
 | `mobile` | 3656 |
 | `(root)` | 1122 |
 | `scripts` | 839 |
@@ -229,7 +229,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 | `src/data/stations.json` | 690 |
 | `stations.json` | 690 |
 | `src/components/AiChat.tsx` | 625 |
-| `src/components/Header.tsx` | 507 |
+| `src/components/Header.tsx` | 512 |
 | `src/app/explore/page.tsx` | 467 |
 | `src/components/three/Stage.tsx` | 381 |
 | `src/app/globals.css` | 365 |
@@ -238,16 +238,16 @@ The map is useful for quickly identifying the layout of the project, understandi
 
 | Extension | Files | Lines of Code | Size |
 |-----------|-------|---------------|------------|
-| .tsx | 47 | 7433 | 337.71 KB |
-| .ts | 34 | 2808 | 113.44 KB |
-| .json | 15 | 2370 | 979.92 KB |
-| .md | 6 | 355 | 13.85 KB |
+| .tsx | 47 | 7443 | 340.29 KB |
+| .ts | 34 | 2823 | 114.37 KB |
+| .json | 15 | 2370 | 979.96 KB |
+| .md | 6 | 355 | 14.11 KB |
 | .mjs | 5 | 119 | 5.17 KB |
 | .js | 4 | 741 | 26.29 KB |
 | .webmanifest | 1 | 24 | 944 B |
 | .css | 1 | 365 | 20.02 KB |
 | .tsbuildinfo | 1 | 1 | 494.55 KB |
-| **Total** | **114** | **14216** | **1.95 MB** |
+| **Total** | **114** | **14241** | **1.95 MB** |
 
 ### Binary / Media Files (Physical Size)
 
@@ -259,4 +259,4 @@ The map is useful for quickly identifying the layout of the project, understandi
 | **Total** | **16** | **3.5 MB** |
 
 **Grand Total Files:** 130  
-**Total Repository Size:** 5.44 MB
+**Total Repository Size:** 5.45 MB

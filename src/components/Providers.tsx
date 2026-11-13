@@ -2,12 +2,17 @@
 import { useEffect } from "react";
 import { ThemeProvider } from "next-themes";
 import { ScrollProvider } from "@/lib/scroll";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { useAppStore } from "@/lib/store";
 
 function AuthInit() {
   const setUser = useAppStore((s) => s.setUser);
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setUser(null);
+      return;
+    }
+
     const supabase = createClient();
     // Check initial session
     supabase.auth.getUser().then(({ data: { user } }) => {
