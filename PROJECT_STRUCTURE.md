@@ -241,7 +241,7 @@ The map is useful for quickly identifying the layout of the project, understandi
 | .tsx | 47 | 7443 | 340.29 KB |
 | .ts | 34 | 2823 | 114.37 KB |
 | .json | 15 | 2370 | 979.96 KB |
-| .md | 6 | 355 | 14.11 KB |
+| .md | 6 | 355 | 13.85 KB |
 | .mjs | 5 | 119 | 5.17 KB |
 | .js | 4 | 741 | 26.29 KB |
 | .webmanifest | 1 | 24 | 944 B |
